@@ -1,0 +1,26 @@
+# Local research/scratch
+.firecrawl/
+
+# Node
+node_modules/
+dist/
+build/
+*.log
+
+# Wrangler/Cloudflare
+.wrangler/
+.dev.vars
+chinook.sql
+chinook.sql.bak
+
+# n8n exports with credentials (never commit)
+*-with-creds.json
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Editors
+.vscode/
+.idea/
+*.swp
