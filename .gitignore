@@ -12,6 +12,7 @@ build/
 .dev.vars
 chinook.sql
 chinook.sql.bak
+.chinook-loaded
 
 # n8n exports with credentials (never commit)
 *-with-creds.json
