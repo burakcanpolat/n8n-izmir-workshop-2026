@@ -1,0 +1,65 @@
+erDiagram
+  Artist ||--o{ Album : has
+  Album ||--o{ Track : contains
+  Genre ||--o{ Track : categorizes
+  MediaType ||--o{ Track : formats
+  Track ||--o{ InvoiceLine : sold_as
+  Track ||--o{ PlaylistTrack : in
+  Playlist ||--o{ PlaylistTrack : has
+  Customer ||--o{ Invoice : places
+  Invoice ||--o{ InvoiceLine : has
+  Employee ||--o{ Customer : supports
+  Employee ||--o{ Employee : reports_to
+
+  Artist {
+    int ArtistId
+    string Name
+  }
+  Album {
+    int AlbumId
+    string Title
+    int ArtistId
+  }
+  Track {
+    int TrackId
+    string Name
+    int AlbumId
+    int GenreId
+    int MediaTypeId
+    decimal UnitPrice
+  }
+  Invoice {
+    int InvoiceId
+    int CustomerId
+    datetime InvoiceDate
+    string BillingCountry
+    decimal Total
+  }
+  InvoiceLine {
+    int InvoiceLineId
+    int InvoiceId
+    int TrackId
+    decimal UnitPrice
+    int Quantity
+  }
+  Customer {
+    int CustomerId
+    string FirstName
+    string LastName
+    string Country
+    int SupportRepId
+  }
+  Employee {
+    int EmployeeId
+    string FirstName
+    string LastName
+    int ReportsTo
+  }
+  Genre {
+    int GenreId
+    string Name
+  }
+  Playlist {
+    int PlaylistId
+    string Name
+  }
