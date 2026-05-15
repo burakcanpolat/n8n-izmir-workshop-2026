@@ -20,14 +20,16 @@ wrangler whoami
 
 # 1. Create the D1 database (or reuse existing).
 echo "==> Ensuring D1 database '$DB_NAME' exists"
+# UUID shape — robust across wrangler 3.x (TOML output) and 4.x (JSON output).
+UUID_RE='[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
 if wrangler d1 list 2>/dev/null | grep -q "$DB_NAME"; then
   echo "    Database already exists. Reusing."
-  DB_ID=$(wrangler d1 list --json | grep -B2 "\"$DB_NAME\"" | grep '"uuid"' | head -1 | cut -d'"' -f4)
+  DB_ID=$(wrangler d1 info "$DB_NAME" 2>/dev/null | grep -oE "$UUID_RE" | head -1)
 else
   echo "    Creating database..."
   CREATE_OUTPUT=$(wrangler d1 create "$DB_NAME")
   echo "$CREATE_OUTPUT"
-  DB_ID=$(echo "$CREATE_OUTPUT" | grep -oE 'database_id = "[^"]+"' | cut -d'"' -f2)
+  DB_ID=$(echo "$CREATE_OUTPUT" | grep -oE "$UUID_RE" | head -1)
 fi
 if [ -z "${DB_ID:-}" ]; then
   echo "ERROR: failed to determine database_id. Edit wrangler.toml manually." >&2
