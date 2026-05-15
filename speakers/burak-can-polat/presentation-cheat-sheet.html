@@ -1,0 +1,804 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Text-to-SQL Agent · n8n İzmir 2026</title>
+<meta name="description" content="Workshop kit for the Text-to-SQL Agent — n8n İzmir 2026. Burak Can Polat.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --paper: #f7f4ec;
+    --paper-shade: #efe9db;
+    --ink: #1a1714;
+    --ink-mute: #6a6259;
+    --rule: #d8cfbb;
+    --accent: #9b2c0f;
+    --accent-hover: #7b2009;
+    --code-bg: #1c1814;
+    --code-fg: #e8dfcc;
+    --green-check: #4a6b3a;
+    --display: "Fraunces", "Iowan Old Style", "Apple Garamond", Georgia, serif;
+    --sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    --mono: ui-monospace, "SF Mono", "JetBrains Mono", Menlo, Monaco, Consolas, monospace;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    font-size: 17px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    /* Faint paper grain — single inline SVG, no requests, no animation. */
+    background-image:
+      url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix values='0 0 0 0 0.10  0 0 0 0 0.09  0 0 0 0 0.08  0 0 0 0.045 0'/></filter><rect width='100%' height='100%' filter='url(%23n)'/></svg>");
+    background-repeat: repeat;
+  }
+
+  main {
+    max-width: 680px;
+    margin: 0 auto;
+    padding: 56px 24px 96px;
+  }
+
+  /* ─── Header ─── */
+  .masthead {
+    border-top: 1.5px solid var(--ink);
+    border-bottom: 1px solid var(--rule);
+    padding: 28px 0 36px;
+    margin-bottom: 88px;
+  }
+  .eyebrow {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--accent);
+    margin: 0 0 16px;
+  }
+  .masthead h1 {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: clamp(38px, 8vw, 60px);
+    line-height: 1.02;
+    letter-spacing: -0.015em;
+    margin: 0 0 8px;
+    font-variation-settings: "opsz" 144;
+  }
+  .masthead .lede {
+    font-family: var(--display);
+    font-weight: 400;
+    font-style: italic;
+    font-size: clamp(20px, 4vw, 26px);
+    color: var(--ink-mute);
+    margin: 0 0 28px;
+    font-variation-settings: "opsz" 36;
+  }
+  .meta {
+    font-family: var(--sans);
+    font-size: 14px;
+    color: var(--ink-mute);
+    margin: 0;
+  }
+  .meta strong { color: var(--ink); font-weight: 600; }
+
+  /* ─── Section frame ─── */
+  section { margin-bottom: 88px; }
+  section:last-of-type { margin-bottom: 56px; }
+
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 18px;
+    margin-bottom: 28px;
+  }
+  .sec-num {
+    font-family: var(--display);
+    font-weight: 600;
+    font-size: 42px;
+    line-height: 1;
+    color: var(--accent);
+    letter-spacing: -0.02em;
+    font-variation-settings: "opsz" 96;
+    min-width: 56px;
+  }
+  .sec-titles { flex: 1; min-width: 0; }
+  .sec-titles h2 {
+    font-family: var(--sans);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--ink);
+    margin: 0 0 6px;
+  }
+  .sec-titles .alt {
+    font-family: var(--display);
+    font-style: italic;
+    font-weight: 400;
+    font-size: 22px;
+    color: var(--ink-mute);
+    margin: 0;
+    font-variation-settings: "opsz" 36;
+  }
+  .sec-rule {
+    width: 64px;
+    height: 2px;
+    background: var(--accent);
+    margin: 0 0 22px;
+  }
+  .sec-desc {
+    margin: 0 0 28px;
+    color: var(--ink);
+    max-width: 56ch;
+  }
+  .sec-desc .tr { display: block; }
+  .sec-desc .en { display: block; color: var(--ink-mute); margin-top: 4px; font-size: 15px; }
+
+  /* ─── Preflight cards ─── */
+  .card {
+    display: grid;
+    grid-template-columns: 32px 1fr auto;
+    gap: 16px;
+    align-items: center;
+    border-top: 1px solid var(--rule);
+    padding: 22px 0;
+  }
+  .card:last-child { border-bottom: 1px solid var(--rule); }
+  .card .idx {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: 22px;
+    color: var(--ink-mute);
+    font-variation-settings: "opsz" 36;
+  }
+  .card-body a.title {
+    font-family: var(--sans);
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1.5px solid transparent;
+    transition: border-color 0.15s ease;
+  }
+  .card-body a.title:hover { border-bottom-color: var(--accent); }
+  .card-body a.title::after { content: " ↗"; color: var(--ink-mute); font-weight: 400; }
+  .card-body .en { display: block; color: var(--ink-mute); font-size: 14px; margin-top: 2px; }
+  .card-body .url {
+    display: block;
+    font-family: var(--mono);
+    font-size: 12.5px;
+    color: var(--ink-mute);
+    margin-top: 4px;
+    word-break: break-all;
+  }
+
+  /* ─── Checkbox ─── */
+  .check {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 28px;
+    height: 28px;
+    border: 1.5px solid var(--ink);
+    background: var(--paper);
+    cursor: pointer;
+    position: relative;
+    flex: none;
+    transition: background 0.12s ease;
+    margin: 0;
+  }
+  .check:checked { background: var(--accent); border-color: var(--accent); }
+  .check:checked::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'><path d='M5 12l4 4 10-10' fill='none' stroke='%23f7f4ec' stroke-width='3' stroke-linecap='square'/></svg>");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: 18px;
+  }
+  .check:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+  /* ─── URL block ─── */
+  .url-block {
+    background: var(--paper-shade);
+    border: 1px solid var(--rule);
+    padding: 16px 18px;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.5;
+    word-break: break-all;
+    color: var(--ink);
+    margin: 0 0 16px;
+    user-select: all;
+    -webkit-user-select: all;
+  }
+
+  /* ─── Buttons ─── */
+  .btn {
+    appearance: none;
+    border: none;
+    background: var(--accent);
+    color: var(--paper);
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.005em;
+    padding: 14px 22px;
+    min-height: 48px;
+    min-width: 48px;
+    cursor: pointer;
+    transition: background 0.12s ease, transform 0.06s ease;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .btn:hover { background: var(--accent-hover); }
+  .btn:active { transform: translateY(1px); }
+  .btn:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+  .btn.copied { background: var(--green-check); }
+  .btn.full { width: 100%; justify-content: center; }
+  .btn-row { display: flex; gap: 12px; flex-wrap: wrap; }
+  .btn-row .btn { flex: 1 1 220px; justify-content: center; }
+
+  /* ─── Details fallback ─── */
+  details {
+    margin-top: 18px;
+    border-top: 1px dashed var(--rule);
+    padding-top: 14px;
+  }
+  details summary {
+    font-family: var(--sans);
+    font-size: 13px;
+    font-weight: 600;
+    letter-spacing: 0.03em;
+    text-transform: uppercase;
+    color: var(--ink-mute);
+    cursor: pointer;
+    list-style: none;
+    padding: 6px 0;
+  }
+  details summary::-webkit-details-marker { display: none; }
+  details summary::before { content: "+ "; color: var(--accent); font-weight: 700; }
+  details[open] summary::before { content: "− "; }
+  details textarea {
+    width: 100%;
+    margin-top: 12px;
+    min-height: 220px;
+    font-family: var(--mono);
+    font-size: 12px;
+    line-height: 1.45;
+    padding: 14px;
+    background: var(--code-bg);
+    color: var(--code-fg);
+    border: none;
+    resize: vertical;
+  }
+  details textarea:focus-visible { outline: 2px solid var(--accent); outline-offset: 0; }
+
+  /* ─── Link list ─── */
+  .links { margin: 0; padding: 0; list-style: none; }
+  .links li { border-top: 1px solid var(--rule); }
+  .links li:last-child { border-bottom: 1px solid var(--rule); }
+  .links a {
+    display: flex;
+    align-items: baseline;
+    gap: 14px;
+    padding: 18px 0;
+    text-decoration: none;
+    color: var(--ink);
+    font-family: var(--sans);
+    font-weight: 500;
+  }
+  .links a::before {
+    content: "→";
+    color: var(--accent);
+    font-family: var(--display);
+    font-size: 20px;
+    flex: none;
+  }
+  .links a .en { color: var(--ink-mute); font-weight: 400; font-size: 14px; }
+
+  /* ─── Footer ─── */
+  footer {
+    border-top: 1.5px solid var(--ink);
+    padding-top: 22px;
+    font-size: 13px;
+    color: var(--ink-mute);
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    justify-content: space-between;
+  }
+  footer a {
+    color: var(--ink);
+    text-decoration: none;
+    border-bottom: 1.5px solid var(--rule);
+    padding-bottom: 1px;
+  }
+  footer a:hover { border-bottom-color: var(--accent); }
+
+  /* ─── Mobile tightening ─── */
+  @media (max-width: 480px) {
+    main { padding: 32px 18px 80px; }
+    .masthead { margin-bottom: 64px; }
+    section { margin-bottom: 64px; }
+    .sec-head { gap: 14px; }
+    .sec-num { font-size: 36px; min-width: 44px; }
+    .btn-row .btn { flex-basis: 100%; }
+  }
+</style>
+</head>
+<body>
+<main>
+
+  <header class="masthead">
+    <p class="eyebrow">Workshop Kit · 17 Mayıs 2026</p>
+    <h1>Text-to-SQL Agent</h1>
+    <p class="lede">n8n İzmir 2026 — bir 30 dakika</p>
+    <p class="meta"><strong>Burak Can Polat</strong> · Doğal dilden SQL'e bir Telegram bot kuralım.</p>
+  </header>
+
+  <section id="preflight">
+    <div class="sec-head">
+      <span class="sec-num">01</span>
+      <div class="sec-titles">
+        <h2>Hazırlık</h2>
+        <p class="alt">Pre-flight checklist</p>
+      </div>
+    </div>
+    <div class="sec-rule"></div>
+    <p class="sec-desc">
+      <span class="tr">Üç hesap aç. Hepsi ücretsiz, kart gerektirmez, ~3 dakika.</span>
+      <span class="en">Open three accounts. All free, no card required, ~3 min total.</span>
+    </p>
+
+    <div class="card">
+      <span class="idx">01</span>
+      <div class="card-body">
+        <a class="title" href="https://app.n8n.cloud" target="_blank" rel="noopener">n8n Cloud hesabı aç</a>
+        <span class="en">Create n8n Cloud free trial</span>
+        <span class="url">app.n8n.cloud</span>
+      </div>
+      <input type="checkbox" class="check" data-key="ck-n8n" aria-label="n8n Cloud hesabı hazır">
+    </div>
+
+    <div class="card">
+      <span class="idx">02</span>
+      <div class="card-body">
+        <a class="title" href="https://aistudio.google.com/apikey" target="_blank" rel="noopener">Gemini API key al</a>
+        <span class="en">Get a free Gemini API key (no credit card)</span>
+        <span class="url">aistudio.google.com/apikey</span>
+      </div>
+      <input type="checkbox" class="check" data-key="ck-gemini" aria-label="Gemini API key hazır">
+    </div>
+
+    <div class="card">
+      <span class="idx">03</span>
+      <div class="card-body">
+        <a class="title" href="https://t.me/BotFather" target="_blank" rel="noopener">Telegram bot oluştur</a>
+        <span class="en">Create a bot via @BotFather and copy the token</span>
+        <span class="url">t.me/BotFather</span>
+      </div>
+      <input type="checkbox" class="check" data-key="ck-telegram" aria-label="Telegram bot tokenı hazır">
+    </div>
+  </section>
+
+  <section id="import">
+    <div class="sec-head">
+      <span class="sec-num">02</span>
+      <div class="sec-titles">
+        <h2>Workflow'u İçe Aktar</h2>
+        <p class="alt">Import the workflow</p>
+      </div>
+    </div>
+    <div class="sec-rule"></div>
+    <p class="sec-desc">
+      <span class="tr">n8n'de yeni bir workflow aç → üst sağdaki ⋯ menüsü → "Import from URL". Aşağıdaki URL'yi yapıştır.</span>
+      <span class="en">Open n8n → top-right ⋯ menu → "Import from URL". Paste the link below.</span>
+    </p>
+
+    <div class="url-block" id="workflow-url">https://raw.githubusercontent.com/onurpolat05/n8n-izmir-workshop-2026/main/speakers/burak-can-polat/workflows/text-to-sql-agent.json</div>
+    <button type="button" class="btn full" data-copy="workflow-url" aria-label="Workflow URL'sini kopyala">
+      <span class="default">📋 URL'yi kopyala / Copy URL</span>
+      <span class="ok" hidden>✓ Kopyalandı / Copied</span>
+    </button>
+
+    <details>
+      <summary>Alternatif: JSON'u manuel yapıştır / Paste JSON manually</summary>
+      <textarea id="workflow-json" readonly spellcheck="false"></textarea>
+      <button type="button" class="btn full" data-copy="workflow-json" style="margin-top:12px;" aria-label="JSON'u kopyala">
+        <span class="default">📋 JSON'u kopyala / Copy JSON</span>
+        <span class="ok" hidden>✓ Kopyalandı / Copied</span>
+      </button>
+    </details>
+  </section>
+
+  <section id="prompt">
+    <div class="sec-head">
+      <span class="sec-num">03</span>
+      <div class="sec-titles">
+        <h2>Sistem Promptu</h2>
+        <p class="alt">System prompt</p>
+      </div>
+    </div>
+    <div class="sec-rule"></div>
+    <p class="sec-desc">
+      <span class="tr">AI Agent node'un "Options → System Message" alanına yapıştır. Tercih ettiğin dili seç.</span>
+      <span class="en">Paste into the AI Agent node's "Options → System Message" field. Pick the language you prefer.</span>
+    </p>
+
+    <div class="btn-row">
+      <button type="button" class="btn" data-copy="prompt-tr" aria-label="Türkçe promptu kopyala">
+        <span class="default">📋 Türkçe promptu</span>
+        <span class="ok" hidden>✓ Kopyalandı</span>
+      </button>
+      <button type="button" class="btn" data-copy="prompt-en" aria-label="Copy English prompt">
+        <span class="default">📋 English prompt</span>
+        <span class="ok" hidden>✓ Copied</span>
+      </button>
+    </div>
+  </section>
+
+  <section id="bonus">
+    <div class="sec-head">
+      <span class="sec-num">04</span>
+      <div class="sec-titles">
+        <h2>Workshop Sonrası</h2>
+        <p class="alt">After the workshop</p>
+      </div>
+    </div>
+    <div class="sec-rule"></div>
+    <p class="sec-desc">
+      <span class="tr">Eve götüreceğin bonus içerikler.</span>
+      <span class="en">Take-home bonus content.</span>
+    </p>
+
+    <ul class="links">
+      <li><a href="data/demo-questions.md" target="_blank" rel="noopener">Demo soruları <span class="en">— 12 hazır sorgu, reference SQL</span></a></li>
+      <li><a href="bonus/dev-corner/" target="_blank" rel="noopener">Dev köşesi <span class="en">— Code Tool versiyonu, geliştiriciler için</span></a></li>
+      <li><a href="cloudflare-worker/" target="_blank" rel="noopener">Worker kaynağı <span class="en">— Cloudflare Worker + D1 (libSQL/SQLite)</span></a></li>
+    </ul>
+  </section>
+
+  <footer>
+    <span>Burak Can Polat · 2026-05-17</span>
+    <a href="https://github.com/onurpolat05/n8n-izmir-workshop-2026" target="_blank" rel="noopener">github.com/onurpolat05/n8n-izmir-workshop-2026</a>
+  </footer>
+
+</main>
+
+<!-- ────────────────────────────────────────────────────────────
+     Embedded content: prompts + skeleton workflow JSON.
+     These are static strings, evaluated once on page load.
+     ──────────────────────────────────────────────────────────── -->
+<script id="prompt-tr-src" type="text/plain">Sen, Chinook müzik mağazası SQLite veritabanı (salt-okunur) için
+Türkçe/İngilizce konuşan bir veri analistisin. En güncel veriler 2013'tendir.
+
+# VERİTABANI ŞEMASI
+Artist(ArtistId, Name)
+Album(AlbumId, Title, ArtistId → Artist)
+Track(TrackId, Name, AlbumId → Album, GenreId → Genre, MediaTypeId,
+      Composer, Milliseconds, Bytes, UnitPrice)
+Genre(GenreId, Name)
+MediaType(MediaTypeId, Name)
+Customer(CustomerId, FirstName, LastName, Company, Country, Email,
+         SupportRepId → Employee)
+Invoice(InvoiceId, CustomerId → Customer, InvoiceDate, BillingCountry, Total)
+InvoiceLine(InvoiceLineId, InvoiceId → Invoice, TrackId → Track,
+            UnitPrice, Quantity)
+Employee(EmployeeId, LastName, FirstName, Title, ReportsTo → Employee,
+         HireDate, Country)
+Playlist(PlaylistId, Name)
+PlaylistTrack(PlaylistId, TrackId)
+
+# ARAÇLARIN
+1. generate_and_test_sql(sql) — SQL'i LIMIT 5 ile çalıştırır.
+   Başarılıysa {rows: [...]} döner; hatalıysa {error: "..."} döner.
+2. execute_sql(sql) — SQL'i olduğu gibi çalıştırır. {rows: [...]} döner.
+
+# SÜREÇ — AYNEN UYGULA
+1. HERHANGİ bir veri sorusu için ÖNCE generate_and_test_sql çağır.
+2. Hata dönerse SQL'i düzelt ve 3 deneye kadar tekrar generate_and_test_sql çağır.
+3. Test başarılı olduğunda execute_sql'i AYNI SQL ile çalıştır.
+4. Sonucu Markdown tablo olarak biçimlendir (skalerse tek değer ver).
+5. Sonun altına kullanıcının dilinde bir cümlelik yorum ekle.
+
+# KURALLAR
+- Sadece SQLite sözdizimi (ISNULL yerine COALESCE; tarihler için strftime()).
+- Salt-okunur: INSERT/UPDATE/DELETE/DROP/ALTER reddet.
+- Şemada olmayan tablo/sütun adı uydurma — sadece yukarıdakini kullan.
+- Soru muğlaksa TEK bir açıklayıcı soru sor.
+- "Bu yıl" veya "şimdi" dediğinde 2013 olduğunu kullanıcıya doğrulat.
+</script>
+
+<script id="prompt-en-src" type="text/plain">You are a Turkish/English-speaking data analyst for the Chinook music
+store SQLite database (read-only). The latest data is from 2013.
+
+# DATABASE SCHEMA
+Artist(ArtistId, Name)
+Album(AlbumId, Title, ArtistId → Artist)
+Track(TrackId, Name, AlbumId → Album, GenreId → Genre, MediaTypeId,
+      Composer, Milliseconds, Bytes, UnitPrice)
+Genre(GenreId, Name)
+MediaType(MediaTypeId, Name)
+Customer(CustomerId, FirstName, LastName, Company, Country, Email,
+         SupportRepId → Employee)
+Invoice(InvoiceId, CustomerId → Customer, InvoiceDate, BillingCountry, Total)
+InvoiceLine(InvoiceLineId, InvoiceId → Invoice, TrackId → Track,
+            UnitPrice, Quantity)
+Employee(EmployeeId, LastName, FirstName, Title, ReportsTo → Employee,
+         HireDate, Country)
+Playlist(PlaylistId, Name)
+PlaylistTrack(PlaylistId, TrackId)
+
+# YOUR TOOLS
+1. generate_and_test_sql(sql) — runs the SQL with LIMIT 5.
+   Returns {rows: [...]} on success or {error: "..."} on failure.
+2. execute_sql(sql) — runs the SQL as-is. Returns {rows: [...]}.
+
+# PROCESS — FOLLOW EXACTLY
+1. For ANY data question, FIRST call generate_and_test_sql.
+2. If it returns an error, fix the SQL and retry up to 3 times.
+3. Once the test succeeds, call execute_sql with the EXACT same SQL.
+4. Format the result as a Markdown table (or single value if scalar).
+5. Add a one-sentence interpretation in the user's language.
+
+# RULES
+- SQLite syntax only (COALESCE not ISNULL; strftime() for dates).
+- Read-only: refuse INSERT/UPDATE/DELETE/DROP/ALTER.
+- Never invent table or column names — use only what's in the schema above.
+- If the question is ambiguous, ask ONE clarifying question.
+- For "this year" or "current", confirm the user means 2013 (latest data).
+</script>
+
+<script id="workflow-json-src" type="application/json">{
+  "name": "Text-to-SQL Agent (Skeleton — fill the AI Agent live)",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "id": "trigger-telegram",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 300],
+      "webhookId": "REPLACE_ON_FIRST_RUN",
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_YOUR_TELEGRAM_CRED_ID",
+          "name": "Telegram (Workshop Bot)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "// Paste the system prompt from presentation-cheat-sheet.html during the workshop"
+        }
+      },
+      "id": "agent-main",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {
+          "temperature": 0.2,
+          "maxOutputTokens": 2048
+        }
+      },
+      "id": "llm-gemini",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [380, 520],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "REPLACE_WITH_YOUR_GEMINI_CRED_ID",
+          "name": "Gemini (Workshop)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}",
+        "contextWindowLength": 5
+      },
+      "id": "memory-buffer",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [500, 520]
+    },
+    {
+      "parameters": {
+        "name": "generate_and_test_sql",
+        "description": "Validates a SQL query by running it with LIMIT 5 against the Chinook SQLite backend. Returns {rows:[...]} on success, {error:'...'} on failure. ALWAYS call this before execute_sql.",
+        "method": "POST",
+        "url": "WORKER_URL_HERE/test",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"sql\": \"{{ $fromAI('sql', 'The SQL SELECT query to dry-run with LIMIT 5. SQLite syntax only.', 'string') }}\" }",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "tool-test",
+      "name": "generate_and_test_sql",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [620, 520]
+    },
+    {
+      "parameters": {
+        "name": "execute_sql",
+        "description": "Executes a previously-validated SQL query against the Chinook SQLite backend and returns the full result set. Only call after generate_and_test_sql succeeded.",
+        "method": "POST",
+        "url": "WORKER_URL_HERE/execute",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"sql\": \"{{ $fromAI('sql', 'The validated SQL SELECT query to run. SQLite syntax only. Pass the EXACT string that succeeded in generate_and_test_sql.', 'string') }}\" }",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "tool-execute",
+      "name": "execute_sql",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [740, 520]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "send-telegram",
+      "name": "Telegram Send",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [800, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_YOUR_TELEGRAM_CRED_ID",
+          "name": "Telegram (Workshop Bot)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [{"node": "AI Agent", "type": "main", "index": 0}]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [{"node": "Telegram Send", "type": "main", "index": 0}]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [{"node": "AI Agent", "type": "ai_languageModel", "index": 0}]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [{"node": "AI Agent", "type": "ai_memory", "index": 0}]
+      ]
+    },
+    "generate_and_test_sql": {
+      "ai_tool": [
+        [{"node": "AI Agent", "type": "ai_tool", "index": 0}]
+      ]
+    },
+    "execute_sql": {
+      "ai_tool": [
+        [{"node": "AI Agent", "type": "ai_tool", "index": 0}]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "v1-workshop-skeleton",
+  "id": "burak-text-to-sql-skeleton",
+  "meta": {
+    "instanceId": "workshop"
+  },
+  "tags": []
+}
+</script>
+
+<script>
+(() => {
+  // ─── Restore + persist checkbox state ────────────────────────
+  document.querySelectorAll('.check').forEach((box) => {
+    const key = box.dataset.key;
+    if (key && localStorage.getItem(key) === '1') box.checked = true;
+    box.addEventListener('change', () => {
+      if (!key) return;
+      if (box.checked) localStorage.setItem(key, '1');
+      else localStorage.removeItem(key);
+    });
+  });
+
+  // ─── Load embedded JSON into the textarea ────────────────────
+  const jsonSrc = document.getElementById('workflow-json-src');
+  const ta = document.getElementById('workflow-json');
+  if (jsonSrc && ta) ta.value = jsonSrc.textContent.trim();
+
+  // ─── Resolve copy-target by id, returning string text ────────
+  function textFor(targetId) {
+    // Inline scripts (type=text/plain) for prompts:
+    const promptMap = { 'prompt-tr': 'prompt-tr-src', 'prompt-en': 'prompt-en-src' };
+    if (promptMap[targetId]) {
+      const el = document.getElementById(promptMap[targetId]);
+      return el ? el.textContent.replace(/^\s+/, '').replace(/\s+$/, '') : '';
+    }
+    const el = document.getElementById(targetId);
+    if (!el) return '';
+    if (el.tagName === 'TEXTAREA' || el.tagName === 'INPUT') return el.value;
+    return el.textContent.trim();
+  }
+
+  // ─── Wire copy buttons ───────────────────────────────────────
+  document.querySelectorAll('[data-copy]').forEach((btn) => {
+    btn.addEventListener('click', async () => {
+      const text = textFor(btn.dataset.copy);
+      if (!text) return;
+      try {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          await navigator.clipboard.writeText(text);
+        } else {
+          // Fallback for older mobile browsers (no clipboard API).
+          const tmp = document.createElement('textarea');
+          tmp.value = text;
+          tmp.setAttribute('readonly', '');
+          tmp.style.position = 'absolute';
+          tmp.style.left = '-9999px';
+          document.body.appendChild(tmp);
+          tmp.select();
+          document.execCommand('copy');
+          document.body.removeChild(tmp);
+        }
+        const def = btn.querySelector('.default');
+        const ok  = btn.querySelector('.ok');
+        if (def && ok) { def.hidden = true; ok.hidden = false; }
+        btn.classList.add('copied');
+        clearTimeout(btn._t);
+        btn._t = setTimeout(() => {
+          if (def && ok) { def.hidden = false; ok.hidden = true; }
+          btn.classList.remove('copied');
+        }, 2000);
+      } catch (e) {
+        alert('Kopyalama başarısız / Copy failed: ' + e.message);
+      }
+    });
+  });
+})();
+</script>
+</body>
+</html>
