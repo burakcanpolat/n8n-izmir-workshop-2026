@@ -1,0 +1,169 @@
+{
+  "name": "Text-to-SQL Agent (Finished — Burak)",
+  "nodes": [
+    {
+      "parameters": {
+        "updates": ["message"],
+        "additionalFields": {}
+      },
+      "id": "trigger-telegram",
+      "name": "Telegram Trigger",
+      "type": "n8n-nodes-base.telegramTrigger",
+      "typeVersion": 1.1,
+      "position": [200, 300],
+      "webhookId": "REPLACE_ON_FIRST_RUN",
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_YOUR_TELEGRAM_CRED_ID",
+          "name": "Telegram (Workshop Bot)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.message.text }}",
+        "options": {
+          "systemMessage": "PASTE_SYSTEM_PROMPT_FROM_prompts/system-prompt-en.md_HERE"
+        }
+      },
+      "id": "agent-main",
+      "name": "AI Agent",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 1.7,
+      "position": [500, 300]
+    },
+    {
+      "parameters": {
+        "modelName": "models/gemini-2.0-flash",
+        "options": {
+          "temperature": 0.2,
+          "maxOutputTokens": 2048
+        }
+      },
+      "id": "llm-gemini",
+      "name": "Google Gemini Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "typeVersion": 1,
+      "position": [380, 520],
+      "credentials": {
+        "googlePalmApi": {
+          "id": "REPLACE_WITH_YOUR_GEMINI_CRED_ID",
+          "name": "Gemini (Workshop)"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sessionIdType": "customKey",
+        "sessionKey": "={{ $json.message.chat.id }}",
+        "contextWindowLength": 5
+      },
+      "id": "memory-buffer",
+      "name": "Window Buffer Memory",
+      "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
+      "typeVersion": 1.3,
+      "position": [500, 520]
+    },
+    {
+      "parameters": {
+        "name": "generate_and_test_sql",
+        "description": "Validates a SQL query by running it with LIMIT 5 against the Chinook SQLite backend. Returns {rows:[...]} on success, {error:'...'} on failure. ALWAYS call this before execute_sql.",
+        "method": "POST",
+        "url": "WORKER_URL_HERE/test",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"sql\": \"{{ $fromAI('sql', 'The SQL SELECT query to dry-run with LIMIT 5. SQLite syntax only.', 'string') }}\" }",
+        "options": {
+          "timeout": 10000
+        }
+      },
+      "id": "tool-test",
+      "name": "generate_and_test_sql",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [620, 520]
+    },
+    {
+      "parameters": {
+        "name": "execute_sql",
+        "description": "Executes a previously-validated SQL query against the Chinook SQLite backend and returns the full result set. Only call after generate_and_test_sql succeeded.",
+        "method": "POST",
+        "url": "WORKER_URL_HERE/execute",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"sql\": \"{{ $fromAI('sql', 'The validated SQL SELECT query to run. SQLite syntax only. Pass the EXACT string that succeeded in generate_and_test_sql.', 'string') }}\" }",
+        "options": {
+          "timeout": 15000
+        }
+      },
+      "id": "tool-execute",
+      "name": "execute_sql",
+      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
+      "typeVersion": 1.1,
+      "position": [740, 520]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
+        "text": "={{ $json.output }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "id": "send-telegram",
+      "name": "Telegram Send",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [800, 300],
+      "credentials": {
+        "telegramApi": {
+          "id": "REPLACE_WITH_YOUR_TELEGRAM_CRED_ID",
+          "name": "Telegram (Workshop Bot)"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Telegram Trigger": {
+      "main": [
+        [{"node": "AI Agent", "type": "main", "index": 0}]
+      ]
+    },
+    "AI Agent": {
+      "main": [
+        [{"node": "Telegram Send", "type": "main", "index": 0}]
+      ]
+    },
+    "Google Gemini Chat Model": {
+      "ai_languageModel": [
+        [{"node": "AI Agent", "type": "ai_languageModel", "index": 0}]
+      ]
+    },
+    "Window Buffer Memory": {
+      "ai_memory": [
+        [{"node": "AI Agent", "type": "ai_memory", "index": 0}]
+      ]
+    },
+    "generate_and_test_sql": {
+      "ai_tool": [
+        [{"node": "AI Agent", "type": "ai_tool", "index": 0}]
+      ]
+    },
+    "execute_sql": {
+      "ai_tool": [
+        [{"node": "AI Agent", "type": "ai_tool", "index": 0}]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "v1-workshop-finished",
+  "id": "burak-text-to-sql-finished",
+  "meta": {
+    "instanceId": "workshop"
+  },
+  "tags": []
+}
