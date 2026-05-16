@@ -418,6 +418,40 @@
   .trio-card .seq .step .n { color: var(--accent); margin-right: 4px; }
 
   /* ─────────────────────────────────────────────
+     TABLES GRID (Chinook 11-table list)
+     ───────────────────────────────────────────── */
+  .tables-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+    margin: 20px 0 18px;
+  }
+  .tables-grid .tcell {
+    border: 1px solid var(--line);
+    background: var(--bg-card);
+    border-radius: 4px;
+    padding: 10px 14px;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .tables-grid .tname {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--accent);
+    font-weight: 600;
+    margin-right: 8px;
+  }
+  .tables-grid .trole {
+    font-family: 'Geist', system-ui, sans-serif;
+    color: var(--ink-mute);
+  }
+  .schema-note {
+    font-family: 'Geist', system-ui, sans-serif;
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin: 0 0 24px;
+  }
+
+  /* ─────────────────────────────────────────────
      ARCHITECTURE / SVG WRAP
      ───────────────────────────────────────────── */
   .arch {
@@ -721,6 +755,7 @@
     .hero { padding: 28px 22px; }
     .hero h1 { font-size: 28px; }
     .trio { grid-template-columns: 1fr; }
+    .tables-grid { grid-template-columns: 1fr; }
     .build-step-bar { padding: 12px 14px; flex-wrap: wrap; }
     .build-body, .demo-body { padding: 16px 14px 20px; }
     .step-time { margin-left: 0; }
@@ -868,20 +903,34 @@
       <section id="chinook">
         <div class="sec-head">
           <span class="sec-num">02 /</span>
-          <h2 class="sec-title">Chinook veritabanı + mimari</h2>
+          <h2 class="sec-title">Chinook Veritabanı Nedir?</h2>
           <span class="sec-aside"><span class="pill">SQLite · D1</span></span>
         </div>
 
         <p class="prose">
-          <strong>Chinook</strong>, dijital müzik mağazası örnek veritabanıdır:
-          ~3500 parça, 2021–2025 sipariş geçmişi, 11 tablo
-          (<code>Artist</code>, <code>Album</code>, <code>Track</code>, <code>Genre</code>,
-          <code>MediaType</code>, <code>Customer</code>, <code>Invoice</code>,
-          <code>InvoiceLine</code>, <code>Employee</code>, <code>Playlist</code>,
-          <code>PlaylistTrack</code>). Gerçekçi <em>ama</em> kafa karıştırmayacak boyutta —
-          tam workshop için. SQL eğitimlerinde standart dataset olduğu için seçtik;
-          interneti tarayan AI'ların bilgi tabanına aşinadır, bu da sorguların
-          doğruluğunu artırır.
+          Chinook, dijital bir müzik mağazasını modelleyen örnek bir
+          <strong>SQLite veritabanıdır</strong>. Workshop için 2021-2025 arası sipariş geçmişi
+          yüklendi — ~3500 parça, 11 tablo, gerçekçi ama anlaşılır boyut. Sıfırdan SQL
+          öğrenirken kullanılan standart dataset'lerden biri.
+        </p>
+
+        <div class="tables-grid">
+          <div class="tcell"><span class="tname">Artist</span><span class="trole">Sanatçı kayıtları (Iron Maiden, Metallica, ...)</span></div>
+          <div class="tcell"><span class="tname">Album</span><span class="trole">Albümler, her biri bir sanatçıya bağlı</span></div>
+          <div class="tcell"><span class="tname">Track</span><span class="trole">Parçalar (album, genre, süre, fiyat)</span></div>
+          <div class="tcell"><span class="tname">Genre</span><span class="trole">Müzik türleri (Rock, Latin, Metal, ...)</span></div>
+          <div class="tcell"><span class="tname">MediaType</span><span class="trole">Format (MP3, AAC, Protected MPEG-4, ...)</span></div>
+          <div class="tcell"><span class="tname">Customer</span><span class="trole">Müşteri kayıtları, ülke + email</span></div>
+          <div class="tcell"><span class="tname">Invoice</span><span class="trole">Fatura başlıkları (toplam tutar, tarih, ülke)</span></div>
+          <div class="tcell"><span class="tname">InvoiceLine</span><span class="trole">Fatura kalemleri (parça + adet + birim fiyat)</span></div>
+          <div class="tcell"><span class="tname">Employee</span><span class="trole">Çalışanlar (manager hiyerarşili)</span></div>
+          <div class="tcell"><span class="tname">Playlist</span><span class="trole">Çalma listeleri</span></div>
+          <div class="tcell"><span class="tname">PlaylistTrack</span><span class="trole">Liste-parça eşlemesi (many-to-many)</span></div>
+        </div>
+
+        <p class="schema-note">
+          Tam ER diyagramı: <a href="./data/chinook-schema.mmd"><code>data/chinook-schema.mmd</code></a>
+          (Mermaid kaynak — VS Code/Mermaid Live'da aç)
         </p>
 
         <div class="arch">
