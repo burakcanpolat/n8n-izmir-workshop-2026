@@ -9,8 +9,8 @@
       "id": "trigger-telegram",
       "name": "Telegram Trigger",
       "type": "n8n-nodes-base.telegramTrigger",
-      "typeVersion": 1.1,
-      "position": [200, 300],
+      "typeVersion": 1.2,
+      "position": [0, 0],
       "webhookId": "REPLACE_ON_FIRST_RUN",
       "credentials": {
         "telegramApi": {
@@ -24,90 +24,93 @@
         "promptType": "define",
         "text": "={{ $json.message.text }}",
         "options": {
-          "systemMessage": "PASTE_SYSTEM_PROMPT_FROM_prompts/system-prompt-en.md_HERE"
+          "systemMessage": "Sen, Chinook müzik mağazası SQLite veritabanı (salt-okunur) için\nTürkçe/İngilizce konuşan bir veri analistisin. En güncel veriler 2025'tendir.\n\n# VERİTABANI ŞEMASI\nArtist(ArtistId, Name)\nAlbum(AlbumId, Title, ArtistId → Artist)\nTrack(TrackId, Name, AlbumId → Album, GenreId → Genre, MediaTypeId,\n      Composer, Milliseconds, Bytes, UnitPrice)\nGenre(GenreId, Name)\nMediaType(MediaTypeId, Name)\nCustomer(CustomerId, FirstName, LastName, Company, Country, Email,\n         SupportRepId → Employee)\nInvoice(InvoiceId, CustomerId → Customer, InvoiceDate, BillingCountry, Total)\nInvoiceLine(InvoiceLineId, InvoiceId → Invoice, TrackId → Track,\n            UnitPrice, Quantity)\nEmployee(EmployeeId, LastName, FirstName, Title, ReportsTo → Employee,\n         HireDate, Country)\nPlaylist(PlaylistId, Name)\nPlaylistTrack(PlaylistId, TrackId)\n\n# ARAÇLARIN\n1. generate_and_test_sql(sql) — SQL'i LIMIT 5 ile çalıştırır.\n   Başarılıysa {rows: [...]} döner; hatalıysa {error: \"...\"} döner.\n2. execute_sql(sql) — SQL'i olduğu gibi çalıştırır. {rows: [...]} döner.\n\n# SÜREÇ — AYNEN UYGULA\n1. HERHANGİ bir veri sorusu için ÖNCE generate_and_test_sql çağır.\n2. Hata dönerse SQL'i düzelt ve 3 deneye kadar tekrar generate_and_test_sql çağır.\n3. Test başarılı olduğunda execute_sql'i AYNI SQL ile çalıştır.\n4. Sonucu Markdown tablo olarak biçimlendir (skalerse tek değer ver).\n5. Sonun altına kullanıcının dilinde bir cümlelik yorum ekle.\n\n# KURALLAR\n- Sadece SQLite sözdizimi (ISNULL yerine COALESCE; tarihler için strftime()).\n- Salt-okunur: INSERT/UPDATE/DELETE/DROP/ALTER reddet.\n- Şemada olmayan tablo/sütun adı uydurma — sadece yukarıdakini kullan.\n- Soru muğlaksa TEK bir açıklayıcı soru sor.\n- \"Bu yıl\" veya \"şimdi\" dediğinde 2025 olduğunu (veri setindeki en son yıl) kullanıcıya doğrulat.\n"
         }
       },
       "id": "agent-main",
       "name": "AI Agent",
       "type": "@n8n/n8n-nodes-langchain.agent",
-      "typeVersion": 1.7,
-      "position": [500, 300]
+      "typeVersion": 3.1,
+      "position": [208, 0]
     },
     {
       "parameters": {
-        "modelName": "models/gemini-2.0-flash",
-        "options": {
-          "temperature": 0.2,
-          "maxOutputTokens": 2048
-        }
+        "model": "anthropic/claude-haiku-4.5",
+        "options": {}
       },
-      "id": "llm-gemini",
-      "name": "Google Gemini Chat Model",
-      "type": "@n8n/n8n-nodes-langchain.lmChatGoogleGemini",
+      "id": "llm-openrouter",
+      "name": "OpenRouter Chat Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenRouter",
       "typeVersion": 1,
-      "position": [380, 520],
+      "position": [128, 304],
       "credentials": {
-        "googlePalmApi": {
-          "id": "REPLACE_WITH_YOUR_GEMINI_CRED_ID",
-          "name": "Gemini (Workshop)"
+        "openRouterApi": {
+          "id": "REPLACE_WITH_YOUR_OPENROUTER_CRED_ID",
+          "name": "OpenRouter (Workshop)"
         }
       }
     },
     {
       "parameters": {
         "sessionIdType": "customKey",
-        "sessionKey": "={{ $json.message.chat.id }}",
-        "contextWindowLength": 5
+        "sessionKey": "={{ $('Telegram Trigger').item.json.message.chat.id }}"
       },
       "id": "memory-buffer",
       "name": "Window Buffer Memory",
       "type": "@n8n/n8n-nodes-langchain.memoryBufferWindow",
       "typeVersion": 1.3,
-      "position": [500, 520]
+      "position": [272, 304]
     },
     {
       "parameters": {
-        "name": "generate_and_test_sql",
-        "description": "Validates a SQL query by running it with LIMIT 5 against the Chinook SQLite backend. Returns {rows:[...]} on success, {error:'...'} on failure. ALWAYS call this before execute_sql.",
+        "toolDescription": "Validates a SQL query by running it with LIMIT 5 against the Chinook SQLite backend. Returns {rows:[...]} on success, {error:'...'} on failure. ALWAYS call this before execute_sql.",
         "method": "POST",
-        "url": "WORKER_URL_HERE/test",
+        "url": "https://chinook-workshop.bitter-brook-7999.workers.dev/test",
         "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={ \"sql\": \"{{ $fromAI('sql', 'The SQL SELECT query to dry-run with LIMIT 5. SQLite syntax only.', 'string') }}\" }",
-        "options": {
-          "timeout": 10000
-        }
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "sql",
+              "value": "={{ $fromAI('sql', 'The SQL SELECT query to dry-run with LIMIT 5. SQLite syntax only.', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
       },
       "id": "tool-test",
       "name": "generate_and_test_sql",
-      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
-      "typeVersion": 1.1,
-      "position": [620, 520]
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [448, 288]
     },
     {
       "parameters": {
-        "name": "execute_sql",
-        "description": "Executes a previously-validated SQL query against the Chinook SQLite backend and returns the full result set. Only call after generate_and_test_sql succeeded.",
+        "toolDescription": "Executes a previously-validated SQL query against the Chinook SQLite backend and returns the full result set. Only call after generate_and_test_sql succeeded.",
         "method": "POST",
-        "url": "WORKER_URL_HERE/execute",
+        "url": "https://chinook-workshop.bitter-brook-7999.workers.dev/execute",
         "sendBody": true,
-        "specifyBody": "json",
-        "jsonBody": "={ \"sql\": \"{{ $fromAI('sql', 'The validated SQL SELECT query to run. SQLite syntax only. Pass the EXACT string that succeeded in generate_and_test_sql.', 'string') }}\" }",
-        "options": {
-          "timeout": 15000
-        }
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "sql",
+              "value": "={{ $fromAI('sql', 'The validated SQL SELECT query to run. SQLite syntax only. Pass the EXACT string that succeeded in generate_and_test_sql.', 'string') }}"
+            }
+          ]
+        },
+        "options": {}
       },
       "id": "tool-execute",
       "name": "execute_sql",
-      "type": "@n8n/n8n-nodes-langchain.toolHttpRequest",
-      "typeVersion": 1.1,
-      "position": [740, 520]
+      "type": "n8n-nodes-base.httpRequestTool",
+      "typeVersion": 4.4,
+      "position": [624, 288]
     },
     {
       "parameters": {
         "chatId": "={{ $('Telegram Trigger').item.json.message.chat.id }}",
         "text": "={{ $json.output }}",
         "additionalFields": {
+          "appendAttribution": false,
           "parse_mode": "Markdown"
         }
       },
@@ -115,7 +118,8 @@
       "name": "Telegram Send",
       "type": "n8n-nodes-base.telegram",
       "typeVersion": 1.2,
-      "position": [800, 300],
+      "position": [704, 0],
+      "webhookId": "REPLACE_ON_FIRST_RUN",
       "credentials": {
         "telegramApi": {
           "id": "REPLACE_WITH_YOUR_TELEGRAM_CRED_ID",
@@ -126,44 +130,28 @@
   ],
   "connections": {
     "Telegram Trigger": {
-      "main": [
-        [{"node": "AI Agent", "type": "main", "index": 0}]
-      ]
+      "main": [[{ "node": "AI Agent", "type": "main", "index": 0 }]]
     },
     "AI Agent": {
-      "main": [
-        [{"node": "Telegram Send", "type": "main", "index": 0}]
-      ]
+      "main": [[{ "node": "Telegram Send", "type": "main", "index": 0 }]]
     },
-    "Google Gemini Chat Model": {
-      "ai_languageModel": [
-        [{"node": "AI Agent", "type": "ai_languageModel", "index": 0}]
-      ]
+    "OpenRouter Chat Model": {
+      "ai_languageModel": [[{ "node": "AI Agent", "type": "ai_languageModel", "index": 0 }]]
     },
     "Window Buffer Memory": {
-      "ai_memory": [
-        [{"node": "AI Agent", "type": "ai_memory", "index": 0}]
-      ]
+      "ai_memory": [[{ "node": "AI Agent", "type": "ai_memory", "index": 0 }]]
     },
     "generate_and_test_sql": {
-      "ai_tool": [
-        [{"node": "AI Agent", "type": "ai_tool", "index": 0}]
-      ]
+      "ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
     },
     "execute_sql": {
-      "ai_tool": [
-        [{"node": "AI Agent", "type": "ai_tool", "index": 0}]
-      ]
+      "ai_tool": [[{ "node": "AI Agent", "type": "ai_tool", "index": 0 }]]
     }
   },
   "active": false,
-  "settings": {
-    "executionOrder": "v1"
-  },
-  "versionId": "v1-workshop-finished",
+  "settings": { "executionOrder": "v1" },
+  "versionId": "v2-workshop-finished",
   "id": "burak-text-to-sql-finished",
-  "meta": {
-    "instanceId": "workshop"
-  },
+  "meta": { "instanceId": "workshop" },
   "tags": []
 }
