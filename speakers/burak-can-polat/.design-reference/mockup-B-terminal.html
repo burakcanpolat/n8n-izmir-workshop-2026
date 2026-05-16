@@ -1,0 +1,1247 @@
+<!doctype html>
+<html lang="tr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>n8n + Telegram + AI Agent — Doğal Dilden SQL'e</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  /* ─────────────────────────────────────────────
+     RESET + BASE
+     ───────────────────────────────────────────── */
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  :root {
+    --bg:        #0A0E12;
+    --bg-elev:   #0F141A;
+    --bg-card:   #11171F;
+    --bg-code:   #0C1218;
+    --line:      #1F2A36;
+    --line-2:    #2A3947;
+    --ink:       #E6EDF3;
+    --ink-mute:  #9BA9B8;
+    --ink-dim:   #647688;
+    --accent:    #A8E10C;          /* terminal green */
+    --accent-2:  #5EEBFF;          /* electric blue */
+    --amber:     #FFB60A;
+    --warn:      #FF6E5A;
+    --shadow:    0 0 0 1px var(--line), 0 12px 40px -12px rgba(0,0,0,0.6);
+  }
+  html { scroll-behavior: smooth; -webkit-text-size-adjust: 100%; }
+  body {
+    font-family: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+    background: var(--bg);
+    color: var(--ink);
+    font-size: 14px;
+    line-height: 1.6;
+    /* subtle grid texture */
+    background-image:
+      linear-gradient(to right, rgba(255,255,255,0.018) 1px, transparent 1px),
+      linear-gradient(to bottom, rgba(255,255,255,0.018) 1px, transparent 1px),
+      radial-gradient(ellipse 1200px 600px at 50% -10%, rgba(168,225,12,0.06), transparent 60%);
+    background-size: 32px 32px, 32px 32px, 100% 100%;
+    background-attachment: fixed;
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+  /* faint scanline overlay */
+  body::before {
+    content: "";
+    position: fixed; inset: 0;
+    background-image: repeating-linear-gradient(
+      to bottom, rgba(255,255,255,0) 0, rgba(255,255,255,0) 3px,
+      rgba(255,255,255,0.012) 3px, rgba(255,255,255,0.012) 4px);
+    pointer-events: none;
+    z-index: 1;
+  }
+  ::selection { background: rgba(168,225,12,0.30); color: #fff; }
+
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { color: #C7F33E; }
+
+  /* ─────────────────────────────────────────────
+     LAYOUT SHELL
+     ───────────────────────────────────────────── */
+  .shell {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 240px minmax(0, 1fr);
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 0 24px;
+    gap: 48px;
+  }
+
+  /* ─────────────────────────────────────────────
+     TOP BAR
+     ───────────────────────────────────────────── */
+  .topbar {
+    position: sticky; top: 0;
+    z-index: 50;
+    background: rgba(10,14,18,0.85);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--line);
+  }
+  .topbar-inner {
+    max-width: 1320px;
+    margin: 0 auto;
+    padding: 14px 24px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.02em;
+  }
+  .brand-dot {
+    width: 9px; height: 9px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 12px var(--accent);
+    animation: pulse 1.8s ease-in-out infinite;
+  }
+  @keyframes pulse { 50% { opacity: 0.4; } }
+  .brand-slash { color: var(--ink-dim); margin: 0 6px; }
+  .topbar-meta {
+    font-size: 12px;
+    color: var(--ink-mute);
+    display: flex;
+    gap: 18px;
+    align-items: center;
+  }
+  .topbar-meta .kbd {
+    border: 1px solid var(--line-2);
+    padding: 2px 7px;
+    border-radius: 3px;
+    background: var(--bg-elev);
+    font-size: 11px;
+    color: var(--ink);
+  }
+
+  /* ─────────────────────────────────────────────
+     SIDEBAR
+     ───────────────────────────────────────────── */
+  aside.nav {
+    position: sticky;
+    top: 56px;
+    align-self: start;
+    height: calc(100vh - 56px);
+    overflow-y: auto;
+    padding: 32px 0 32px 4px;
+    border-right: 1px solid var(--line);
+  }
+  .nav-section {
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    font-size: 10px;
+    letter-spacing: 0.18em;
+    padding: 18px 12px 10px;
+  }
+  .nav a {
+    display: block;
+    padding: 7px 12px;
+    color: var(--ink-mute);
+    border-left: 2px solid transparent;
+    font-size: 13px;
+    transition: all 0.12s;
+  }
+  .nav a:hover {
+    color: var(--ink);
+    background: rgba(255,255,255,0.02);
+  }
+  .nav a.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: rgba(168,225,12,0.04);
+  }
+  .nav-num {
+    display: inline-block;
+    color: var(--ink-dim);
+    width: 24px;
+    font-size: 11px;
+  }
+
+  /* ─────────────────────────────────────────────
+     MAIN COLUMN
+     ───────────────────────────────────────────── */
+  main {
+    padding: 32px 0 120px;
+    min-width: 0;
+  }
+  section { margin-bottom: 72px; scroll-margin-top: 80px; }
+
+  /* ─────────────────────────────────────────────
+     HERO
+     ───────────────────────────────────────────── */
+  .hero {
+    border: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(168,225,12,0.04), transparent 70%), var(--bg-elev);
+    padding: 44px 40px 40px;
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(to right, rgba(168,225,12,0.05) 1px, transparent 1px);
+    background-size: 40px 100%;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--bg-code);
+    border: 1px solid var(--line-2);
+    border-radius: 100px;
+    padding: 5px 12px 5px 10px;
+    font-size: 11px;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+    margin-bottom: 28px;
+    position: relative;
+    z-index: 1;
+  }
+  .hero-tag .tag-dot {
+    width: 7px; height: 7px;
+    background: var(--accent);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--accent);
+  }
+  .hero h1 {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: clamp(28px, 5vw, 48px);
+    font-weight: 800;
+    letter-spacing: -0.02em;
+    line-height: 1.05;
+    margin-bottom: 18px;
+    color: var(--ink);
+    position: relative;
+    z-index: 1;
+  }
+  .hero h1 .accent { color: var(--accent); }
+  .hero h1 .arrow { color: var(--ink-dim); margin: 0 4px; }
+  .hero h1 .cursor {
+    display: inline-block;
+    width: 0.5em; height: 1em;
+    background: var(--accent);
+    vertical-align: -0.15em;
+    margin-left: 0.15em;
+    animation: blink 1s steps(2) infinite;
+  }
+  @keyframes blink { 50% { opacity: 0; } }
+  .hero-sub {
+    font-size: 16px;
+    color: var(--ink-mute);
+    margin-bottom: 12px;
+    position: relative; z-index: 1;
+  }
+  .hero-meta {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    color: var(--ink-dim);
+    margin-bottom: 24px;
+    position: relative; z-index: 1;
+  }
+  .hero-meta .sep { color: var(--line-2); margin: 0 10px; }
+  .hero-prop {
+    color: var(--ink);
+    font-size: 15px;
+    line-height: 1.55;
+    max-width: 720px;
+    margin-bottom: 32px;
+    position: relative; z-index: 1;
+    font-family: 'Geist', system-ui, sans-serif;
+  }
+  .hero-cta {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent);
+    color: #0A0E12;
+    padding: 12px 22px;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 14px;
+    transition: transform 0.12s, box-shadow 0.12s;
+    box-shadow: 0 0 0 1px var(--accent), 0 8px 24px -8px rgba(168,225,12,0.5);
+    position: relative; z-index: 1;
+  }
+  .hero-cta:hover {
+    transform: translateY(-1px);
+    color: #0A0E12;
+    box-shadow: 0 0 0 1px var(--accent), 0 12px 32px -8px rgba(168,225,12,0.7);
+  }
+  .hero-cta-arrow { transition: transform 0.12s; }
+  .hero-cta:hover .hero-cta-arrow { transform: translateX(3px); }
+
+  .hero-prompt {
+    margin-top: 28px;
+    padding: 14px 16px;
+    background: var(--bg-code);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    font-size: 12px;
+    color: var(--ink-mute);
+    position: relative; z-index: 1;
+    display: flex;
+    gap: 12px;
+    align-items: center;
+  }
+  .hero-prompt .prompt-prefix { color: var(--accent); font-weight: 700; }
+  .hero-prompt .prompt-text { color: var(--ink); flex: 1; }
+
+  /* ─────────────────────────────────────────────
+     SECTION HEADER PATTERN
+     ───────────────────────────────────────────── */
+  .sec-head {
+    display: flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 24px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid var(--line);
+  }
+  .sec-num {
+    color: var(--accent);
+    font-weight: 700;
+    font-size: 13px;
+    letter-spacing: 0.05em;
+  }
+  .sec-title {
+    font-size: 22px;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+    color: var(--ink);
+  }
+  .sec-aside {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--ink-dim);
+  }
+  .sec-aside .pill {
+    display: inline-block;
+    padding: 3px 9px;
+    border: 1px solid var(--line-2);
+    border-radius: 100px;
+    color: var(--ink-mute);
+    background: var(--bg-elev);
+  }
+
+  .prose {
+    font-family: 'Geist', system-ui, sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    color: var(--ink-mute);
+    max-width: 760px;
+    margin-bottom: 24px;
+  }
+  .prose strong { color: var(--ink); font-weight: 600; }
+  .prose code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bg-code);
+    border: 1px solid var(--line);
+    padding: 1px 6px;
+    border-radius: 3px;
+    font-size: 12.5px;
+    color: var(--accent);
+  }
+
+  /* ─────────────────────────────────────────────
+     INFO TRIO (3 columns)
+     ───────────────────────────────────────────── */
+  .trio {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+    margin-top: 28px;
+  }
+  .trio-card {
+    border: 1px solid var(--line);
+    background: var(--bg-card);
+    border-radius: 6px;
+    padding: 18px;
+    position: relative;
+    overflow: hidden;
+  }
+  .trio-card::before {
+    content: "";
+    position: absolute;
+    top: 0; left: 0;
+    width: 24px; height: 1px;
+    background: var(--accent);
+  }
+  .trio-label {
+    font-size: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-dim);
+    margin-bottom: 12px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .trio-label .lbl-tick { color: var(--accent); }
+  .trio-card ul { list-style: none; }
+  .trio-card li {
+    font-size: 13px;
+    color: var(--ink);
+    padding: 4px 0 4px 18px;
+    position: relative;
+    line-height: 1.5;
+  }
+  .trio-card li::before {
+    content: "›";
+    position: absolute;
+    left: 0;
+    color: var(--accent);
+    font-weight: 700;
+  }
+  .trio-card .seq {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink);
+    font-size: 13px;
+    line-height: 1.7;
+  }
+  .trio-card .seq .arrow { color: var(--ink-dim); }
+  .trio-card .seq .step { color: var(--ink); }
+  .trio-card .seq .step .n { color: var(--accent); margin-right: 4px; }
+
+  /* ─────────────────────────────────────────────
+     ARCHITECTURE / SVG WRAP
+     ───────────────────────────────────────────── */
+  .arch {
+    border: 1px solid var(--line);
+    background: var(--bg-card);
+    border-radius: 6px;
+    padding: 32px 28px;
+    overflow-x: auto;
+    margin-top: 16px;
+  }
+  .arch-bar {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 24px;
+    padding-bottom: 14px;
+    border-bottom: 1px dashed var(--line);
+  }
+  .arch-dot { width: 11px; height: 11px; border-radius: 50%; }
+  .arch-dot.r { background: #FF6058; }
+  .arch-dot.y { background: #FFBE2F; }
+  .arch-dot.g { background: var(--accent); }
+  .arch-title {
+    margin-left: 12px;
+    font-size: 11px;
+    color: var(--ink-dim);
+    letter-spacing: 0.05em;
+  }
+  .arch svg { display: block; max-width: 100%; height: auto; margin: 0 auto; }
+
+  /* ─────────────────────────────────────────────
+     CODE BLOCK
+     ───────────────────────────────────────────── */
+  .build-card {
+    border: 1px solid var(--line);
+    background: var(--bg-card);
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 8px;
+  }
+  .build-step-bar {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+    background: linear-gradient(180deg, rgba(168,225,12,0.03), transparent);
+  }
+  .step-num-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px; height: 26px;
+    background: var(--accent);
+    color: #0A0E12;
+    font-weight: 800;
+    border-radius: 4px;
+    font-size: 12px;
+  }
+  .step-title {
+    font-weight: 700;
+    color: var(--ink);
+    font-size: 15px;
+  }
+  .step-title .mono { color: var(--accent-2); }
+  .step-time {
+    margin-left: auto;
+    font-size: 11px;
+    color: var(--ink-dim);
+    border: 1px solid var(--line-2);
+    padding: 3px 8px;
+    border-radius: 3px;
+  }
+  .build-body { padding: 20px 20px 24px; }
+  .build-body .prose { margin-bottom: 22px; }
+
+  .code-block {
+    background: var(--bg-code);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    margin-bottom: 16px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .code-block:hover { border-color: var(--line-2); }
+  .code-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 9px 14px;
+    border-bottom: 1px solid var(--line);
+    background: rgba(255,255,255,0.015);
+    gap: 12px;
+  }
+  .code-label {
+    font-size: 11.5px;
+    color: var(--ink-mute);
+    letter-spacing: 0.02em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    min-width: 0;
+  }
+  .code-label .pre {
+    color: var(--accent);
+    font-weight: 700;
+    flex-shrink: 0;
+  }
+  .code-label .lbl-text {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+  .copy-btn {
+    background: transparent;
+    border: 1px solid var(--line-2);
+    color: var(--ink-mute);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 3px;
+    cursor: pointer;
+    transition: all 0.12s;
+    flex-shrink: 0;
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .copy-btn:hover {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(168,225,12,0.05);
+  }
+  .copy-btn.copied {
+    border-color: var(--accent);
+    color: var(--accent);
+    background: rgba(168,225,12,0.10);
+  }
+  .copy-btn .ico {
+    width: 11px; height: 11px;
+    display: inline-block;
+  }
+  .copy-btn .lbl { display: inline-block; }
+  .code-body {
+    padding: 14px 16px;
+    overflow-x: auto;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    line-height: 1.65;
+    color: var(--ink);
+    white-space: pre;
+    -webkit-overflow-scrolling: touch;
+  }
+  /* tokens */
+  .tok-key   { color: #FF7AB6; }
+  .tok-str   { color: var(--accent); }
+  .tok-fn    { color: var(--accent-2); }
+  .tok-com   { color: var(--ink-dim); font-style: italic; }
+  .tok-punc  { color: var(--ink-mute); }
+  .tok-num   { color: var(--amber); }
+  .tok-url   { color: var(--accent-2); }
+
+  /* ─────────────────────────────────────────────
+     DEMO CARD
+     ───────────────────────────────────────────── */
+  .demo-card {
+    border: 1px solid var(--line);
+    background: var(--bg-card);
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  .demo-head {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 14px 20px;
+    border-bottom: 1px solid var(--line);
+  }
+  .demo-q-num {
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--ink-dim);
+    font-size: 12px;
+    letter-spacing: 0.05em;
+  }
+  .badge {
+    font-size: 10.5px;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    padding: 3px 9px;
+    border-radius: 100px;
+    font-weight: 700;
+  }
+  .badge.easy   { background: rgba(168,225,12,0.13); color: var(--accent); border: 1px solid rgba(168,225,12,0.35); }
+  .badge.med    { background: rgba(255,182,10,0.13); color: var(--amber);  border: 1px solid rgba(255,182,10,0.35); }
+  .demo-body { padding: 22px 20px 24px; }
+  .demo-q-block {
+    background: var(--bg-code);
+    border: 1px solid var(--line);
+    border-radius: 6px;
+    padding: 0;
+    margin-bottom: 18px;
+    overflow: hidden;
+    transition: border-color 0.15s;
+  }
+  .demo-q-block:hover { border-color: var(--line-2); }
+  .demo-q-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 14px;
+    border-bottom: 1px dashed var(--line);
+    font-size: 11px;
+    color: var(--ink-dim);
+  }
+  .demo-q-head .pre { color: var(--accent); margin-right: 8px; font-weight: 700; }
+  .demo-q-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 17px;
+    color: var(--ink);
+    padding: 18px 16px;
+    line-height: 1.45;
+    font-weight: 500;
+  }
+  .demo-hint {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    font-family: 'Geist', system-ui, sans-serif;
+    font-size: 13.5px;
+    color: var(--ink-mute);
+    line-height: 1.6;
+    padding: 12px 14px;
+    background: rgba(94,235,255,0.04);
+    border: 1px solid rgba(94,235,255,0.18);
+    border-radius: 5px;
+  }
+  .demo-hint .hint-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--accent-2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    flex-shrink: 0;
+    padding: 1px 0;
+    margin-top: 1px;
+    font-weight: 700;
+  }
+
+  /* ─────────────────────────────────────────────
+     FOOTER
+     ───────────────────────────────────────────── */
+  footer {
+    border-top: 1px solid var(--line);
+    padding: 24px 0;
+    margin-top: 80px;
+    color: var(--ink-dim);
+    font-size: 12px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+  footer .turkish {
+    color: var(--accent);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ─────────────────────────────────────────────
+     RESPONSIVE
+     ───────────────────────────────────────────── */
+  .mobile-toggle {
+    display: none;
+    background: transparent;
+    border: 1px solid var(--line-2);
+    color: var(--ink);
+    padding: 6px 10px;
+    border-radius: 4px;
+    font-family: inherit;
+    font-size: 12px;
+    cursor: pointer;
+  }
+  @media (max-width: 900px) {
+    .shell { grid-template-columns: 1fr; gap: 0; padding: 0 16px; }
+    aside.nav {
+      position: fixed;
+      top: 52px; left: 0; right: 0; bottom: 0;
+      height: calc(100vh - 52px);
+      background: var(--bg);
+      border-right: none;
+      border-top: 1px solid var(--line);
+      padding: 18px 16px 32px;
+      transform: translateX(-100%);
+      transition: transform 0.22s ease;
+      z-index: 40;
+    }
+    aside.nav.open { transform: translateX(0); }
+    .mobile-toggle { display: inline-flex; }
+    main { padding: 24px 0 80px; }
+    .topbar-meta { display: none; }
+    .topbar-inner { padding: 12px 16px; }
+    .hero { padding: 28px 22px; }
+    .hero h1 { font-size: 28px; }
+    .trio { grid-template-columns: 1fr; }
+    .build-step-bar { padding: 12px 14px; flex-wrap: wrap; }
+    .build-body, .demo-body { padding: 16px 14px 20px; }
+    .step-time { margin-left: 0; }
+    .arch { padding: 18px 12px; }
+    .demo-q-text { font-size: 15px; padding: 14px 12px; }
+    .code-body { font-size: 12px; padding: 12px 12px; }
+    .code-head { padding: 8px 10px; }
+    .copy-btn { padding: 4px 8px; font-size: 10.5px; }
+    section { margin-bottom: 48px; }
+    .sec-title { font-size: 18px; }
+  }
+</style>
+</head>
+<body>
+
+  <!-- ═══════════════════════════════════════════
+       TOP BAR
+       ═══════════════════════════════════════════ -->
+  <header class="topbar">
+    <div class="topbar-inner">
+      <div class="brand">
+        <span class="brand-dot"></span>
+        <span>n8n-workshop</span>
+        <span class="brand-slash">/</span>
+        <span style="color:var(--ink-mute)">text-to-sql</span>
+      </div>
+      <div class="topbar-meta">
+        <span>2026-05-17 · İzmir</span>
+        <span class="kbd">⌘</span>
+        <span class="kbd">K</span>
+      </div>
+      <button class="mobile-toggle" id="navToggle" aria-label="menü">≡  menü</button>
+    </div>
+  </header>
+
+  <div class="shell">
+
+    <!-- ═══════════════════════════════════════════
+         SIDEBAR NAV
+         ═══════════════════════════════════════════ -->
+    <aside class="nav" id="sideNav">
+      <div class="nav-section">workshop</div>
+      <a href="#hero" class="active"><span class="nav-num">00</span>Genel Bakış</a>
+      <a href="#section-1"><span class="nav-num">01</span>Bu workshop nedir?</a>
+      <a href="#section-2"><span class="nav-num">02</span>Chinook + Mimari</a>
+      <a href="#section-3"><span class="nav-num">03</span>Tool 1: generate_and_test_sql</a>
+      <a href="#section-4"><span class="nav-num">04</span>Demo: Top 5 müzik türü</a>
+
+      <div class="nav-section">referans</div>
+      <a href="#"><span class="nav-num">·</span>System prompt</a>
+      <a href="#"><span class="nav-num">·</span>Tool 2: execute_sql</a>
+      <a href="#"><span class="nav-num">·</span>Test soruları</a>
+      <a href="#"><span class="nav-num">·</span>Sorun giderme</a>
+
+      <div class="nav-section">bağlantılar</div>
+      <a href="#" target="_blank"><span class="nav-num">↗</span>GitHub repo</a>
+      <a href="#" target="_blank"><span class="nav-num">↗</span>Geri bildirim</a>
+    </aside>
+
+    <!-- ═══════════════════════════════════════════
+         MAIN CONTENT
+         ═══════════════════════════════════════════ -->
+    <main>
+
+      <!-- ────── HERO ────── -->
+      <section id="hero" class="hero">
+        <span class="hero-tag">
+          <span class="tag-dot"></span>
+          CANLI WORKSHOP · 30 DK · TR
+        </span>
+        <h1>
+          Doğal Dilden <span class="accent">SQL'e</span><br>
+          <span style="font-size:0.7em; font-weight:700; color:var(--ink-mute)">
+            n8n <span class="arrow">+</span> Telegram <span class="arrow">+</span> AI Agent
+          </span><span class="cursor"></span>
+        </h1>
+        <p class="hero-sub">30 dakikalık canlı workshop · sıfırdan kendi botun</p>
+        <div class="hero-meta">
+          Burak Can Polat <span class="sep">·</span> 2026-05-17 <span class="sep">·</span> İzmir
+        </div>
+        <p class="hero-prop">
+          Telegram'a Türkçe yazdığın bir soruyu, gerçek bir SQLite veritabanında
+          çalışan SQL'e çevirip cevap döndüren bir bot kur. Workshop bitiminde
+          <strong>kendi n8n hesabında, sıfırdan inşa ettiğin, çalışır bir botun</strong>
+          olacak — şablon import yok, sadece tıkla, yapıştır, çalıştır.
+        </p>
+        <a href="#section-1" class="hero-cta">
+          Workshop'a Başla
+          <span class="hero-cta-arrow">→</span>
+        </a>
+        <div class="hero-prompt">
+          <span class="prompt-prefix">$</span>
+          <span class="prompt-text">çğıöşüÇĞİÖŞÜ — İzmir'de doğal dilden SQL'e dönüşüm</span>
+          <span style="color:var(--ink-dim); font-size:11px">utf-8 · ok</span>
+        </div>
+      </section>
+
+      <!-- ────── SECTION 1: WHAT IS THIS WORKSHOP ────── -->
+      <section id="section-1">
+        <div class="sec-head">
+          <span class="sec-num">01 /</span>
+          <h2 class="sec-title">Bu workshop nedir?</h2>
+          <span class="sec-aside"><span class="pill">~30 dk</span></span>
+        </div>
+
+        <p class="prose">
+          Bu workshop <strong>30 dakikalık, eller-klavyede</strong> bir oturumdur. Beraber
+          yazıyoruz, beraber kuruyoruz — <strong>hiçbir şey import etmiyorsun</strong>. Adım
+          adım birlikte ilerleyeceğiz; sonunda kendi n8n hesabında çalışan,
+          Türkçe konuşulan bir <code>text-to-SQL</code> Telegram botun olacak.
+        </p>
+
+        <div class="trio">
+          <div class="trio-card">
+            <div class="trio-label"><span class="lbl-tick">▶</span> Sonunda elinde olacak</div>
+            <ul>
+              <li>Çalışan Telegram botu</li>
+              <li>n8n workflow'u (kendi hesabında)</li>
+              <li>2 HTTP Tool ile bağlı AI Agent</li>
+              <li>Chinook DB'ye Türkçe sorgu</li>
+            </ul>
+          </div>
+          <div class="trio-card">
+            <div class="trio-label"><span class="lbl-tick">▶</span> Adımlar (yüksek seviye)</div>
+            <div class="seq">
+              <div class="step"><span class="n">1.</span>Telegram bot oluştur</div>
+              <div class="step"><span class="n">2.</span>n8n workflow kur</div>
+              <div class="step"><span class="n">3.</span>2 HTTP tool tanımla</div>
+              <div class="step"><span class="n">4.</span>System prompt yapıştır</div>
+              <div class="step"><span class="n">5.</span>Test et &amp; konuş</div>
+            </div>
+          </div>
+          <div class="trio-card">
+            <div class="trio-label"><span class="lbl-tick">▶</span> Önkoşullar</div>
+            <ul>
+              <li>Telegram hesabı</li>
+              <li>n8n erişimi (self-hosted veya Cloud)</li>
+              <li>OpenRouter API key</li>
+              <li>Tarayıcı + 30 dk dikkat</li>
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- ────── SECTION 2: CHINOOK + ARCHITECTURE ────── -->
+      <section id="section-2">
+        <div class="sec-head">
+          <span class="sec-num">02 /</span>
+          <h2 class="sec-title">Chinook veritabanı + mimari</h2>
+          <span class="sec-aside"><span class="pill">SQLite · D1</span></span>
+        </div>
+
+        <p class="prose">
+          <strong>Chinook</strong>, dijital müzik mağazası örnek veritabanıdır:
+          ~3500 parça, 2021–2025 sipariş geçmişi, 11 tablo
+          (<code>Artist</code>, <code>Album</code>, <code>Track</code>, <code>Genre</code>,
+          <code>MediaType</code>, <code>Customer</code>, <code>Invoice</code>,
+          <code>InvoiceLine</code>, <code>Employee</code>, <code>Playlist</code>,
+          <code>PlaylistTrack</code>). Gerçekçi <em>ama</em> kafa karıştırmayacak boyutta —
+          tam workshop için. SQL eğitimlerinde standart dataset olduğu için seçtik;
+          interneti tarayan AI'ların bilgi tabanına aşinadır, bu da sorguların
+          doğruluğunu artırır.
+        </p>
+
+        <div class="arch">
+          <div class="arch-bar">
+            <span class="arch-dot r"></span>
+            <span class="arch-dot y"></span>
+            <span class="arch-dot g"></span>
+            <span class="arch-title">~/architecture/text-to-sql.svg</span>
+          </div>
+
+          <!-- Inline SVG architecture diagram -->
+          <svg viewBox="0 0 880 380" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Mimari diyagram">
+            <defs>
+              <pattern id="grid" width="20" height="20" patternUnits="userSpaceOnUse">
+                <path d="M 20 0 L 0 0 0 20" fill="none" stroke="#1F2A36" stroke-width="0.5"/>
+              </pattern>
+              <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#A8E10C"/>
+              </marker>
+              <marker id="arrow-blue" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M 0 0 L 10 5 L 0 10 z" fill="#5EEBFF"/>
+              </marker>
+            </defs>
+
+            <rect width="880" height="380" fill="url(#grid)"/>
+
+            <!-- USER -->
+            <g>
+              <rect x="20" y="160" width="120" height="60" rx="4"
+                    fill="#0C1218" stroke="#2A3947" stroke-width="1.5"/>
+              <text x="80" y="184" font-family="JetBrains Mono, monospace" font-size="11"
+                    fill="#9BA9B8" text-anchor="middle">user</text>
+              <text x="80" y="202" font-family="JetBrains Mono, monospace" font-size="13"
+                    fill="#E6EDF3" text-anchor="middle" font-weight="700">Telegram</text>
+            </g>
+
+            <!-- n8n WORKFLOW BOX -->
+            <g>
+              <rect x="200" y="60" width="380" height="260" rx="6"
+                    fill="#0F141A" stroke="#A8E10C" stroke-width="1" stroke-dasharray="3 3"/>
+              <text x="218" y="84" font-family="JetBrains Mono, monospace" font-size="10"
+                    fill="#A8E10C" letter-spacing="2">n8n WORKFLOW</text>
+
+              <!-- Telegram Trigger -->
+              <rect x="220" y="100" width="160" height="48" rx="3"
+                    fill="#11171F" stroke="#2A3947"/>
+              <text x="300" y="118" font-family="JetBrains Mono, monospace" font-size="10"
+                    fill="#647688" text-anchor="middle">trigger</text>
+              <text x="300" y="135" font-family="JetBrains Mono, monospace" font-size="12"
+                    fill="#E6EDF3" text-anchor="middle" font-weight="600">Telegram Trigger</text>
+
+              <!-- AI Agent -->
+              <rect x="220" y="170" width="340" height="60" rx="3"
+                    fill="#11171F" stroke="#A8E10C" stroke-width="1.5"/>
+              <text x="390" y="190" font-family="JetBrains Mono, monospace" font-size="10"
+                    fill="#A8E10C" text-anchor="middle">core</text>
+              <text x="390" y="208" font-family="JetBrains Mono, monospace" font-size="14"
+                    fill="#E6EDF3" text-anchor="middle" font-weight="700">AI Agent</text>
+              <text x="390" y="222" font-family="JetBrains Mono, monospace" font-size="10"
+                    fill="#9BA9B8" text-anchor="middle">openrouter · gpt-4o-mini</text>
+
+              <!-- Tools -->
+              <rect x="220" y="252" width="160" height="48" rx="3"
+                    fill="#0C1218" stroke="#5EEBFF"/>
+              <text x="300" y="270" font-family="JetBrains Mono, monospace" font-size="10"
+                    fill="#5EEBFF" text-anchor="middle">tool · 1</text>
+              <text x="300" y="287" font-family="JetBrains Mono, monospace" font-size="11"
+                    fill="#E6EDF3" text-anchor="middle">generate_and_test</text>
+
+              <rect x="400" y="252" width="160" height="48" rx="3"
+                    fill="#0C1218" stroke="#5EEBFF"/>
+              <text x="480" y="270" font-family="JetBrains Mono, monospace" font-size="10"
+                    fill="#5EEBFF" text-anchor="middle">tool · 2</text>
+              <text x="480" y="287" font-family="JetBrains Mono, monospace" font-size="11"
+                    fill="#E6EDF3" text-anchor="middle">execute_sql</text>
+
+              <!-- internal arrows -->
+              <line x1="300" y1="148" x2="300" y2="168" stroke="#A8E10C" stroke-width="1.5" marker-end="url(#arrow)"/>
+              <line x1="300" y1="232" x2="300" y2="250" stroke="#5EEBFF" stroke-width="1" marker-end="url(#arrow-blue)"/>
+              <line x1="480" y1="232" x2="480" y2="250" stroke="#5EEBFF" stroke-width="1" marker-end="url(#arrow-blue)"/>
+            </g>
+
+            <!-- Cloudflare Worker -->
+            <g>
+              <rect x="640" y="100" width="200" height="80" rx="4"
+                    fill="#0C1218" stroke="#2A3947" stroke-width="1.5"/>
+              <text x="740" y="124" font-family="JetBrains Mono, monospace" font-size="10"
+                    fill="#647688" text-anchor="middle">edge</text>
+              <text x="740" y="143" font-family="JetBrains Mono, monospace" font-size="13"
+                    fill="#E6EDF3" text-anchor="middle" font-weight="700">Cloudflare</text>
+              <text x="740" y="160" font-family="JetBrains Mono, monospace" font-size="11"
+                    fill="#9BA9B8" text-anchor="middle">chinook-workshop</text>
+            </g>
+
+            <!-- D1 -->
+            <g>
+              <rect x="640" y="220" width="200" height="80" rx="4"
+                    fill="#0C1218" stroke="#A8E10C" stroke-width="1.5"/>
+              <text x="740" y="244" font-family="JetBrains Mono, monospace" font-size="10"
+                    fill="#A8E10C" text-anchor="middle">data</text>
+              <text x="740" y="263" font-family="JetBrains Mono, monospace" font-size="13"
+                    fill="#E6EDF3" text-anchor="middle" font-weight="700">D1 SQLite</text>
+              <text x="740" y="280" font-family="JetBrains Mono, monospace" font-size="11"
+                    fill="#9BA9B8" text-anchor="middle">Chinook · 11 tables</text>
+            </g>
+
+            <!-- USER -> n8n -->
+            <line x1="140" y1="190" x2="218" y2="124" stroke="#A8E10C" stroke-width="1.5" marker-end="url(#arrow)"/>
+            <text x="160" y="148" font-family="JetBrains Mono, monospace" font-size="10" fill="#9BA9B8">soru</text>
+
+            <!-- n8n -> Worker -->
+            <line x1="562" y1="276" x2="638" y2="160" stroke="#5EEBFF" stroke-width="1.2" marker-end="url(#arrow-blue)"/>
+            <text x="580" y="216" font-family="JetBrains Mono, monospace" font-size="10" fill="#9BA9B8">HTTP</text>
+
+            <!-- Worker -> D1 -->
+            <line x1="740" y1="180" x2="740" y2="218" stroke="#A8E10C" stroke-width="1.5" marker-end="url(#arrow)"/>
+
+            <!-- back response -->
+            <path d="M 640 285 Q 580 340 380 320 Q 200 310 140 220" stroke="#647688" stroke-width="1" stroke-dasharray="4 4" fill="none" marker-end="url(#arrow)"/>
+            <text x="380" y="356" font-family="JetBrains Mono, monospace" font-size="10" fill="#647688" text-anchor="middle">cevap → kullanıcıya</text>
+          </svg>
+        </div>
+      </section>
+
+      <!-- ────── SECTION 3: BUILD STEP ────── -->
+      <section id="section-3">
+        <div class="sec-head">
+          <span class="sec-num">03 /</span>
+          <h2 class="sec-title">Adım 4 — Tool 1 ekle</h2>
+          <span class="sec-aside"><span class="pill">HTTP Tool · ~4 dk</span></span>
+        </div>
+
+        <div class="build-card">
+          <div class="build-step-bar">
+            <span class="step-num-pill">04</span>
+            <span class="step-title">Tool 1: <span class="mono">generate_and_test_sql</span></span>
+            <span class="step-time">~ 4 dk</span>
+          </div>
+          <div class="build-body">
+            <p class="prose">
+              AI Agent'a ilk HTTP tool'unu ekle. Bu tool üretilen SQL sorgusunu
+              <code>LIMIT 5</code> ile <strong>kuru-çalıştırır</strong> (dry-run): yanıt
+              başarılıysa AI'a güveni gelir, hata varsa AI sorguyu düzeltip tekrar
+              dener. <strong>Önce her zaman bu çağrılır</strong>, sonra
+              <code>execute_sql</code>.
+            </p>
+
+            <!-- CODE BLOCK A -->
+            <div class="code-block">
+              <div class="code-head">
+                <span class="code-label">
+                  <span class="pre">$</span>
+                  <span class="lbl-text">Tool Description (toolDescription alanına yapıştır)</span>
+                </span>
+                <button class="copy-btn" data-copy="tool-desc">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="code-body" id="tool-desc">Validates a SQL query by running it with LIMIT 5 against the Chinook SQLite backend. Returns {rows:[...]} on success, {error:'...'} on failure. ALWAYS call this before execute_sql.</div>
+            </div>
+
+            <!-- CODE BLOCK B -->
+            <div class="code-block">
+              <div class="code-head">
+                <span class="code-label">
+                  <span class="pre">$</span>
+                  <span class="lbl-text">Endpoint URL (URL alanına yapıştır)</span>
+                </span>
+                <button class="copy-btn" data-copy="endpoint-url">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="code-body" id="endpoint-url"><span class="tok-url">https://chinook-workshop.bitter-brook-7999.workers.dev/test</span></div>
+            </div>
+
+            <!-- CODE BLOCK C -->
+            <div class="code-block">
+              <div class="code-head">
+                <span class="code-label">
+                  <span class="pre">$</span>
+                  <span class="lbl-text">Body parameter — name: <code style="color:var(--accent);background:transparent;border:none;padding:0">sql</code>, value:</span>
+                </span>
+                <button class="copy-btn" data-copy="body-expr">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="code-body" id="body-expr"><span class="tok-punc">={{</span> <span class="tok-fn">$fromAI</span><span class="tok-punc">(</span><span class="tok-str">'sql'</span><span class="tok-punc">,</span> <span class="tok-str">'The SQL SELECT query to dry-run with LIMIT 5. SQLite syntax only.'</span><span class="tok-punc">,</span> <span class="tok-str">'string'</span><span class="tok-punc">)</span> <span class="tok-punc">}}</span></div>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <!-- ────── SECTION 4: DEMO Q ────── -->
+      <section id="section-4">
+        <div class="sec-head">
+          <span class="sec-num">04 /</span>
+          <h2 class="sec-title">Demo · Soru #2</h2>
+          <span class="sec-aside"><span class="pill">test · easy</span></span>
+        </div>
+
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-q-num">Q · 02</span>
+            <span class="badge easy">kolay</span>
+            <span style="margin-left:auto;font-size:11px;color:var(--ink-dim)">
+              <span style="color:var(--accent)">●</span> beklenen yanıt: ~2 sn
+            </span>
+          </div>
+          <div class="demo-body">
+
+            <div class="demo-q-block">
+              <div class="demo-q-head">
+                <span><span class="pre">›</span> botuna sor</span>
+                <button class="copy-btn" data-copy="demo-q">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="demo-q-text" id="demo-q">En çok satan ilk 5 müzik türü?</div>
+            </div>
+
+            <div class="demo-hint">
+              <span class="hint-tag">beklenen davranış</span>
+              <span>
+                Agent, <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">Genre × InvoiceLine</code>
+                join'i kurar, satış sayısına göre sıralar, ilk 5'i Türkçe doğal cümleyle döner.
+              </span>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      <footer>
+        <span>n8n-workshop / cheat-sheet · v0.1 · build-mockup-B</span>
+        <span class="turkish">çğıöşüÇĞİÖŞÜ ✓</span>
+        <span>İzmir · 2026-05-17</span>
+      </footer>
+
+    </main>
+  </div>
+
+  <script>
+    // ─── COPY HANDLER ─────────────────────────────
+    // Builds feedback DOM via createElement instead of innerHTML to keep the
+    // (paranoid) static analyzer happy. All text is from constants below — no
+    // user input ever flows into the DOM as HTML.
+
+    function buildIcon(kind) {
+      var SVG_NS = 'http://www.w3.org/2000/svg';
+      var svg = document.createElementNS(SVG_NS, 'svg');
+      svg.setAttribute('class', 'ico');
+      svg.setAttribute('viewBox', '0 0 16 16');
+      svg.setAttribute('fill', 'none');
+      svg.setAttribute('aria-hidden', 'true');
+      var path = document.createElementNS(SVG_NS, 'path');
+      if (kind === 'check') {
+        path.setAttribute('d', 'M3 8l3.5 3.5L13 4');
+        path.setAttribute('stroke', 'currentColor');
+        path.setAttribute('stroke-width', '1.6');
+        path.setAttribute('stroke-linecap', 'round');
+        path.setAttribute('stroke-linejoin', 'round');
+      } else {
+        path.setAttribute('d', 'M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z');
+        path.setAttribute('stroke', 'currentColor');
+        path.setAttribute('stroke-width', '1.4');
+      }
+      svg.appendChild(path);
+      return svg;
+    }
+
+    function setBtnState(btn, kind, label) {
+      // Reset
+      while (btn.firstChild) btn.removeChild(btn.firstChild);
+      btn.appendChild(buildIcon(kind));
+      var span = document.createElement('span');
+      span.className = 'lbl';
+      span.textContent = label;
+      btn.appendChild(span);
+    }
+
+    document.querySelectorAll('.copy-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        var targetId = btn.getAttribute('data-copy');
+        var el = document.getElementById(targetId);
+        if (!el) return;
+        var text = el.innerText || el.textContent || '';
+        var done = function () {
+          btn.classList.add('copied');
+          setBtnState(btn, 'check', 'copied');
+          setTimeout(function () {
+            btn.classList.remove('copied');
+            setBtnState(btn, 'copy', 'copy');
+          }, 1600);
+        };
+        var fail = function () {
+          btn.classList.add('copied');
+          setBtnState(btn, 'copy', 'failed');
+          setTimeout(function () {
+            btn.classList.remove('copied');
+            setBtnState(btn, 'copy', 'copy');
+          }, 1600);
+        };
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(done).catch(function () {
+            if (fallbackCopy(text)) done(); else fail();
+          });
+        } else {
+          if (fallbackCopy(text)) done(); else fail();
+        }
+      });
+    });
+
+    function fallbackCopy(text) {
+      try {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        document.body.appendChild(ta);
+        ta.select();
+        var ok = document.execCommand('copy');
+        document.body.removeChild(ta);
+        return ok;
+      } catch (e) { return false; }
+    }
+
+    // ─── MOBILE NAV TOGGLE ────────────────────────
+    var toggle = document.getElementById('navToggle');
+    var sideNav = document.getElementById('sideNav');
+    if (toggle && sideNav) {
+      toggle.addEventListener('click', function () {
+        sideNav.classList.toggle('open');
+      });
+      sideNav.querySelectorAll('a').forEach(function (a) {
+        a.addEventListener('click', function () { sideNav.classList.remove('open'); });
+      });
+    }
+
+    // ─── ACTIVE NAV HIGHLIGHT ─────────────────────
+    var sections = document.querySelectorAll('section[id]');
+    var navLinks = document.querySelectorAll('aside.nav a[href^="#"]');
+    function setActive() {
+      var y = window.scrollY + 100;
+      var current = sections.length ? sections[0].id : '';
+      sections.forEach(function (s) {
+        if (s.offsetTop <= y) current = s.id;
+      });
+      navLinks.forEach(function (a) {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + current);
+      });
+    }
+    window.addEventListener('scroll', setActive, { passive: true });
+    setActive();
+  </script>
+
+</body>
+</html>
