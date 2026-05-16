@@ -18,15 +18,15 @@ Worker (`/test`, `/execute`) → D1 SQLite.
 
 Cheat sheet'te şunlar var:
 1. Pre-flight kontrol listesi (n8n Cloud, Gemini, Telegram)
-2. Workflow JSON'u tek tıkla içe aktarma
+2. Workflow'u sıfırdan node-by-node kurma adımları
 3. Sistem promptunu kopyalama düğmeleri (TR/EN)
 
 ## 📂 Workshop kit
 
 | Dosya | Ne için |
 |---|---|
-| [`workflows/text-to-sql-agent.json`](workflows/text-to-sql-agent.json) | Atölyede içe aktaracağınız iskelet |
-| [`workflows/text-to-sql-agent-finished.json`](workflows/text-to-sql-agent-finished.json) | Sunum açılışı için tamamlanmış versiyon |
+| [`presentation-cheat-sheet.html`](./presentation-cheat-sheet.html) | Atölyede takip edeceğiniz birincil rehber (sıfırdan kurulum adımları) |
+| [`workflows/text-to-sql-agent-finished.json`](workflows/text-to-sql-agent-finished.json) | Geri kalırsanız içe aktarabileceğiniz tamamlanmış versiyon (recovery) |
 | [`prompts/system-prompt-tr.md`](prompts/system-prompt-tr.md) | AI Agent sistem mesajı (Türkçe) |
 | [`prompts/system-prompt-en.md`](prompts/system-prompt-en.md) | AI Agent sistem mesajı (İngilizce) |
 | [`data/demo-questions.md`](data/demo-questions.md) | 12 örnek soru + referans SQL |
