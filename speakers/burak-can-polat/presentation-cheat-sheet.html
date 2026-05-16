@@ -1093,36 +1093,27 @@
           <span class="tag-dot"></span>
           CANLI WORKSHOP · 30 DK · TR
         </span>
-        <h1>Doğal Dilden SQL'e — n8n + Telegram + AI Agent<span class="cursor" aria-hidden="true"></span></h1>
-        <p class="hero-sub">30 dakikalık canlı workshop</p>
+        <h1>n8n | Text to SQL Agent<span class="cursor" aria-hidden="true"></span></h1>
         <div class="hero-meta">Burak Can Polat · 2026-05-17 · İzmir</div>
         <p class="hero-prop">
-          Sıfırdan, canlı, kendi makinende. 30 dakika sonra Telegram'dan Türkçe SQL sorabilen bir botun olacak.
+          Doğal dil sorgusu ile SQL sorgusu oluşturan ve yorumlayan Telegram Agent.
         </p>
         <a href="#what" class="hero-cta">
           Workshop'a Başla
           <span class="hero-cta-arrow">→</span>
         </a>
-        <div class="hero-prompt">
-          <span class="prompt-prefix">$</span>
-          <span class="prompt-text">çğıöşüÇĞİÖŞÜ — İzmir'de doğal dilden SQL'e dönüşüm</span>
-          <span style="color:var(--ink-dim); font-size:11px">utf-8 · ok</span>
-        </div>
       </section>
 
       <!-- ────── SECTION 1: WHAT IS THIS WORKSHOP ────── -->
       <section id="what">
         <div class="sec-head">
           <span class="sec-num">01 /</span>
-          <h2 class="sec-title">Bu Workshop Nedir?</h2>
+          <h2 class="sec-title">Ne yapacağız?</h2>
           <span class="sec-aside"><span class="pill">~30 dk</span></span>
         </div>
 
         <p class="prose">
-          <strong>30 dakika boyunca canlı</strong>, beraber, sıfırdan bir Telegram bot
-          kuracağız. <strong>Import yok</strong> — her node'u kendin oluşturacaksın.
-          Sonunda kendi n8n instance'ında <strong>Türkçe SQL sorabilen</strong> bir botun
-          olacak.
+          <strong>30 dakika içinde</strong>, beraber, sıfırdan bir text2sql agent oluşturup Telegram ile erişeceğimiz bir bot oluşturacağız.
         </p>
 
         <div class="trio">
@@ -1136,7 +1127,7 @@
             </p>
           </div>
           <div class="trio-card">
-            <div class="trio-label"><span class="lbl-tick">▶</span> Adımlar (yüksek seviye)</div>
+            <div class="trio-label"><span class="lbl-tick">▶</span> Adımlar (genel bakış)</div>
             <div class="seq">
               <span class="step"><span class="n">›</span>BotFather</span>
               <span class="arrow"> → </span>
@@ -1501,12 +1492,13 @@
       <section id="checklist">
         <div class="sec-head">
           <span class="sec-num">05 /</span>
-          <h2 class="sec-title">Uçuş Öncesi Kontroller</h2>
+          <h2 class="sec-title">Workshop Kontrol listesi</h2>
           <span class="sec-aside"><span class="pill">~5 dk</span></span>
         </div>
 
         <p class="prose">
-          Workshop'a girmeden 5 dakika önce hepsini tıkla. Eksik varsa yerine git, tamamla, dön.
+          Workshop öncesi kontroller, Worker kontrol etmenize gerek yok.
+          Ancak, eğer bir şeyler yanlış giderse, buradan başlayabilirsiniz.
         </p>
 
         <ul class="checklist">
@@ -1544,20 +1536,6 @@
               <span class="check-text">Worker <code>/test</code> endpoint sağlıklı</span>
             </label>
             <p class="check-help">yukarıdaki health-check curl'ü <code>{"rows":[{"health":1}]}</code> dönüyor</p>
-          </li>
-          <li>
-            <label>
-              <input type="checkbox">
-              <span class="check-text">Bu cheat sheet bir tarayıcı sekmesinde açık</span>
-            </label>
-            <p class="check-help">kopyala-yapıştır için lazım olacak</p>
-          </li>
-          <li>
-            <label>
-              <input type="checkbox">
-              <span class="check-text">En az 30 dakika kesintisiz vaktin var</span>
-            </label>
-            <p class="check-help">telefon sessize, kahve dolu</p>
           </li>
         </ul>
       </section>
@@ -2780,8 +2758,8 @@ PlaylistTrack(PlaylistId, TrackId)
             <tr>
               <th scope="col">Model</th>
               <th scope="col">Model ID</th>
-              <th scope="col">Tier</th>
-              <th scope="col">Tool calling</th>
+              <th scope="col">TIER</th>
+              <th scope="col">TOOL CALLING</th>
               <th scope="col">Türkçe</th>
               <th scope="col">Not</th>
             </tr>
