@@ -792,6 +792,54 @@
   }
 
   /* ─────────────────────────────────────────────
+     CHECKLIST  (pre-flight sanity checks)
+     ───────────────────────────────────────────── */
+  .checklist { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 10px; }
+  .checklist li {
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    background: var(--bg-elev);
+    padding: 12px 14px;
+  }
+  .checklist label { display: flex; align-items: flex-start; gap: 10px; cursor: pointer; }
+  .checklist input[type="checkbox"] {
+    appearance: none; -webkit-appearance: none;
+    width: 16px; height: 16px; margin: 2px 0 0;
+    border: 1px solid var(--line-2);
+    border-radius: 3px; background: var(--bg-code);
+    cursor: pointer; position: relative; flex: 0 0 auto;
+  }
+  .checklist input[type="checkbox"]:checked {
+    border-color: var(--accent);
+    background: var(--accent);
+    box-shadow: 0 0 8px rgba(168,225,12,0.45);
+  }
+  .checklist input[type="checkbox"]:checked::after {
+    content: ""; position: absolute; left: 4px; top: 0;
+    width: 4px; height: 9px;
+    border: solid var(--bg-code);
+    border-width: 0 2px 2px 0;
+    transform: rotate(45deg);
+  }
+  .checklist .check-text {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13.5px; font-weight: 600;
+    color: var(--ink); line-height: 1.45;
+  }
+  .checklist input[type="checkbox"]:checked + .check-text { color: var(--accent); }
+  .checklist .check-help {
+    font-family: 'Geist', system-ui, sans-serif;
+    font-size: 12.5px; color: var(--ink-mute);
+    margin: 4px 0 0 26px; line-height: 1.5;
+  }
+  .checklist .check-help code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bg-code); border: 1px solid var(--line);
+    padding: 1px 5px; border-radius: 3px;
+    font-size: 11.5px; color: var(--accent);
+  }
+
+  /* ─────────────────────────────────────────────
      FOOTER
      ───────────────────────────────────────────── */
   footer {
@@ -1321,7 +1369,72 @@
         </p>
       </section>
 
-      <!-- ────── SECTION 5: BUILD STEP ────── -->
+      <!-- ────── SECTION 5: CHECKLIST ────── -->
+      <section id="checklist">
+        <div class="sec-head">
+          <span class="sec-num">05 /</span>
+          <h2 class="sec-title">Uçuş Öncesi Kontroller</h2>
+          <span class="sec-aside"><span class="pill">~5 dk</span></span>
+        </div>
+
+        <p class="prose">
+          Workshop'a girmeden 5 dakika önce hepsini tıkla. Eksik varsa yerine git, tamamla, dön.
+        </p>
+
+        <ul class="checklist">
+          <li>
+            <label>
+              <input type="checkbox">
+              <span class="check-text">Telegram hesabın hazır</span>
+            </label>
+            <p class="check-help">mobil app veya web — telegram.org</p>
+          </li>
+          <li>
+            <label>
+              <input type="checkbox">
+              <span class="check-text">BotFather'dan yeni bot oluşturdun + token'ı kaydettin</span>
+            </label>
+            <p class="check-help"><code>@BotFather</code> → <code>/newbot</code></p>
+          </li>
+          <li>
+            <label>
+              <input type="checkbox">
+              <span class="check-text">n8n instance'a erişimin var</span>
+            </label>
+            <p class="check-help">self-hosted (Docker / Hetzner / vs) veya Cloud (n8n.cloud). Yeni workflow oluşturabiliyor olman lazım.</p>
+          </li>
+          <li>
+            <label>
+              <input type="checkbox">
+              <span class="check-text">OpenRouter hesabın var + bir API key oluşturdun</span>
+            </label>
+            <p class="check-help">openrouter.ai/keys</p>
+          </li>
+          <li>
+            <label>
+              <input type="checkbox">
+              <span class="check-text">Worker <code>/test</code> endpoint sağlıklı</span>
+            </label>
+            <p class="check-help">yukarıdaki health-check curl'ü <code>{"rows":[{"health":1}]}</code> dönüyor</p>
+          </li>
+          <li>
+            <label>
+              <input type="checkbox">
+              <span class="check-text">Bu cheat sheet bir tarayıcı sekmesinde açık</span>
+            </label>
+            <p class="check-help">kopyala-yapıştır için lazım olacak</p>
+          </li>
+          <li>
+            <label>
+              <input type="checkbox">
+              <span class="check-text">En az 30 dakika kesintisiz vaktin var</span>
+            </label>
+            <p class="check-help">telefon sessize, kahve dolu</p>
+          </li>
+        </ul>
+      </section>
+
+      <!-- ────── SECTION 6: BUILD STEP ────── -->
       <section id="step-07">
         <div class="sec-head">
           <span class="sec-num">03 /</span>
