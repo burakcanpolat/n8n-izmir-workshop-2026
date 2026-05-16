@@ -1,0 +1,9 @@
+# Copy to wrangler.toml and fill in YOUR database_id (printed by `wrangler d1 create`).
+name = "chinook-workshop"
+main = "src/index.ts"
+compatibility_date = "2026-05-15"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "chinook-workshop"
+database_id = "6893ecc2-e7f2-45c6-9dd6-0c036ec35db3"
