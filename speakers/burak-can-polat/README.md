@@ -7,7 +7,7 @@ SQL üretip, sınayıp ve çalıştıran bir n8n yapay zekâ ajanı.
 **Veri:** Chinook (klasik müzik mağazası örnek veritabanı) — Cloudflare D1'de
 çalışan gerçek SQLite.
 
-**LLM:** Google Gemini 2.0 Flash (her katılımcı kendi ücretsiz anahtarını alır).
+**LLM:** OpenRouter (varsayılan: `anthropic/claude-haiku-4.5`; 8 model alternatifi cheat sheet'te).
 
 **Mimari:** Telegram → n8n AI Agent → 2 HTTP Request Tool → Cloudflare
 Worker (`/test`, `/execute`) → D1 SQLite.
@@ -17,7 +17,7 @@ Worker (`/test`, `/execute`) → D1 SQLite.
 [Atölye cheat sheet'ini aç →](./presentation-cheat-sheet.html)
 
 Cheat sheet'te şunlar var:
-1. Pre-flight kontrol listesi (n8n Cloud, Gemini, Telegram)
+1. Uçuş öncesi kontrol listesi (n8n, OpenRouter, Telegram)
 2. Workflow'u sıfırdan node-by-node kurma adımları
 3. Sistem promptunu kopyalama düğmeleri (TR/EN)
 
@@ -44,13 +44,13 @@ Cheat sheet'te şunlar var:
 
 A 30-min follow-along workshop building a Telegram bot that answers
 data questions in natural language. The bot is an n8n AI Agent
-(Tools Agent mode, Gemini 2.0 Flash) with two HTTP tools —
+(Tools Agent mode, OpenRouter `anthropic/claude-haiku-4.5` by default) with two HTTP tools —
 `generate_and_test_sql` (dry-run with LIMIT 5) and `execute_sql` —
 both hitting a Cloudflare Worker backed by D1 (libSQL/SQLite) preloaded
 with the Chinook dataset.
 
-Audience: corporate data professionals + developers. n8n Cloud + free
-Gemini key + own Telegram bot from BotFather.
+Audience: corporate data professionals + developers. n8n (self-hosted or
+Cloud) + OpenRouter API key + own Telegram bot from BotFather.
 
 To follow along: open the [cheat sheet](./presentation-cheat-sheet.html)
 on the day.
