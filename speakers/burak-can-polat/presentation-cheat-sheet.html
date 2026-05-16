@@ -644,8 +644,65 @@
     border-radius: 100px;
     font-weight: 700;
   }
+  .badge.opener { background: rgba(94,235,255,0.13); color: var(--accent-2); border: 1px solid rgba(94,235,255,0.35); }
   .badge.easy   { background: rgba(168,225,12,0.13); color: var(--accent); border: 1px solid rgba(168,225,12,0.35); }
   .badge.med    { background: rgba(255,182,10,0.13); color: var(--amber);  border: 1px solid rgba(255,182,10,0.35); }
+  .badge.hard   { background: rgba(255,110,90,0.13); color: var(--warn);   border: 1px solid rgba(255,110,90,0.35); }
+  .badge.wow    { background: rgba(255,122,182,0.13); color: #FF7AB6;       border: 1px solid rgba(255,122,182,0.35); }
+  .badge.trap   { background: rgba(255,110,90,0.13); color: var(--warn);   border: 1px solid rgba(255,110,90,0.45); }
+  .demo-sub {
+    margin: 28px 0 14px;
+    padding-bottom: 8px;
+    border-bottom: 1px dashed var(--line);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    letter-spacing: 0.04em;
+    color: var(--ink-mute);
+    text-transform: none;
+  }
+  .demo-sub:first-of-type { margin-top: 8px; }
+  .demo-card + .demo-card { margin-top: 14px; }
+  .demo-note {
+    margin-top: 10px;
+    padding: 10px 14px;
+    border-left: 2px solid var(--line-2);
+    background: rgba(255,255,255,0.015);
+    font-family: 'Geist', system-ui, sans-serif;
+    font-size: 12.5px;
+    line-height: 1.55;
+    color: var(--ink-dim);
+    border-radius: 0 4px 4px 0;
+  }
+  .demo-note .note-tag {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10.5px;
+    color: var(--ink-mute);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-right: 6px;
+  }
+  .demo-hint.demo-hint--trap {
+    background: rgba(255,110,90,0.04);
+    border-color: rgba(255,110,90,0.25);
+  }
+  .demo-hint.demo-hint--trap .hint-tag { color: var(--warn); }
+  .sorular-intro {
+    font-family: 'Geist', system-ui, sans-serif;
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: var(--ink-mute);
+    margin: 12px 0 22px;
+    max-width: 64ch;
+  }
+  .sorular-intro code {
+    font-family: 'JetBrains Mono', monospace;
+    background: var(--bg-code);
+    border: 1px solid var(--line);
+    padding: 1px 5px;
+    border-radius: 3px;
+    font-size: 12px;
+    color: var(--warn);
+  }
   .demo-body { padding: 22px 20px 24px; }
   .demo-q-block {
     background: var(--bg-code);
@@ -2269,43 +2326,420 @@ PlaylistTrack(PlaylistId, TrackId)
         </div>
       </section>
 
-      <!-- ────── SECTION 4: DEMO Q ────── -->
+      <!-- ────── SECTION 7: SORULAR ────── -->
       <section id="sorular">
         <div class="sec-head">
-          <span class="sec-num">04 /</span>
-          <h2 class="sec-title">Demo · Soru #2</h2>
-          <span class="sec-aside"><span class="pill">test · easy</span></span>
+          <span class="sec-num">07 /</span>
+          <h2 class="sec-title">Demo Soru Bankası</h2>
+          <span class="sec-aside"><span class="pill">15 soru · Q0 + Q1-12 + T1-T2</span></span>
         </div>
+
+        <p class="sorular-intro">
+          15 sorudan oluşan canlı demo seti. Bot'a kopyala-yapıştır şeklinde gönder.
+          Trap soruları (<code>T1</code>, <code>T2</code>) özellikle eğitici — bot ne yaparsa onu izle.
+        </p>
+
+        <!-- ─── Açılış ─── -->
+        <h3 class="demo-sub">🎯 Açılış — SQL Önizleme (yeni)</h3>
+
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-q-num">Q · 00</span>
+            <span class="badge opener">açılış</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q-block">
+              <div class="demo-q-head">
+                <span><span class="pre">›</span> botuna sor</span>
+                <button class="copy-btn" data-copy="q-0">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="demo-q-text" id="q-0">Top 5 sanatçı için SQL sorgusu yaz, sadece SQL'i göster, ÇALIŞTIRMA.</div>
+            </div>
+            <div class="demo-hint">
+              <span class="hint-tag">beklenen davranış</span>
+              <span>
+                Bot tool çağırmaz (<code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">generate_and_test_sql</code>/<code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">execute_sql</code> atlanır), sadece markdown SQL bloğu döker. Audience şeffaflığı görür.
+              </span>
+            </div>
+            <div class="demo-note">
+              <span class="note-tag">pedagojik not</span>
+              Bot, system prompt'taki "önce <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:11.5px">generate_and_test_sql</code> çağır" direktifini user'ın "ÇALIŞTIRMA" emriyle override eder. İyi agent kullanıcıyı dinler.
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── Trivial ─── -->
+        <h3 class="demo-sub">Trivial — 1 soru</h3>
+
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-q-num">Q · 01</span>
+            <span class="badge easy">trivial</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q-block">
+              <div class="demo-q-head">
+                <span><span class="pre">›</span> botuna sor</span>
+                <button class="copy-btn" data-copy="q-1">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="demo-q-text" id="q-1">Müşterilerimiz hangi ülkelerden geliyor?</div>
+            </div>
+            <div class="demo-hint">
+              <span class="hint-tag">beklenen davranış</span>
+              <span>
+                Bot <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">Invoice</code> tablosundan <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">DISTINCT BillingCountry</code> çeker, 24 ülke listeler.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── Kolay ─── -->
+        <h3 class="demo-sub">Kolay — 3 soru</h3>
 
         <div class="demo-card">
           <div class="demo-head">
             <span class="demo-q-num">Q · 02</span>
             <span class="badge easy">kolay</span>
-            <span style="margin-left:auto;font-size:11px;color:var(--ink-dim)">
-              <span style="color:var(--accent)">●</span> beklenen yanıt: ~2 sn
-            </span>
           </div>
           <div class="demo-body">
-
             <div class="demo-q-block">
               <div class="demo-q-head">
                 <span><span class="pre">›</span> botuna sor</span>
-                <button class="copy-btn" data-copy="demo-q">
+                <button class="copy-btn" data-copy="q-2">
                   <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
                   <span class="lbl">copy</span>
                 </button>
               </div>
-              <div class="demo-q-text" id="demo-q">En çok satan ilk 5 müzik türü?</div>
+              <div class="demo-q-text" id="q-2">En çok satan ilk 5 müzik türü?</div>
             </div>
-
             <div class="demo-hint">
               <span class="hint-tag">beklenen davranış</span>
               <span>
-                Agent, <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">Genre × InvoiceLine</code>
-                join'i kurar, satış sayısına göre sıralar, ilk 5'i Türkçe doğal cümleyle döner.
+                <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">InvoiceLine + Track + Genre</code> JOIN, Rock 835 / Latin 386 / Metal 264 / Alt&amp;Punk 244 / Jazz 80.
               </span>
             </div>
+          </div>
+        </div>
 
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-q-num">Q · 03</span>
+            <span class="badge easy">kolay</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q-block">
+              <div class="demo-q-head">
+                <span><span class="pre">›</span> botuna sor</span>
+                <button class="copy-btn" data-copy="q-3">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="demo-q-text" id="q-3">Harcamaya göre ilk 10 müşterimiz kim?</div>
+            </div>
+            <div class="demo-hint">
+              <span class="hint-tag">beklenen davranış</span>
+              <span>
+                <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">Customer + Invoice</code> JOIN, Helena Holý $49.62 en üstte.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-q-num">Q · 04</span>
+            <span class="badge easy">kolay</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q-block">
+              <div class="demo-q-head">
+                <span><span class="pre">›</span> botuna sor</span>
+                <button class="copy-btn" data-copy="q-4">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="demo-q-text" id="q-4">Yıllara göre toplam ciro?</div>
+            </div>
+            <div class="demo-hint">
+              <span class="hint-tag">beklenen davranış</span>
+              <span>
+                <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">strftime('%Y')</code> + <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">SUM</code>, 2021-2025 arası 5 satır.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── Orta ─── -->
+        <h3 class="demo-sub">Orta — 4 soru</h3>
+
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-q-num">Q · 05</span>
+            <span class="badge med">orta</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q-block">
+              <div class="demo-q-head">
+                <span><span class="pre">›</span> botuna sor</span>
+                <button class="copy-btn" data-copy="q-5">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="demo-q-text" id="q-5">Hangi destek temsilcisi en çok geliri sağlıyor?</div>
+            </div>
+            <div class="demo-hint">
+              <span class="hint-tag">beklenen davranış</span>
+              <span>
+                <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">Employee → Customer → Invoice</code> 3'lü JOIN, Jane Peacock $833.04 en üstte.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-q-num">Q · 06</span>
+            <span class="badge med">orta</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q-block">
+              <div class="demo-q-head">
+                <span><span class="pre">›</span> botuna sor</span>
+                <button class="copy-btn" data-copy="q-6">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="demo-q-text" id="q-6">En az 5 faturası olan ülkeler için ortalama sipariş tutarı?</div>
+            </div>
+            <div class="demo-hint">
+              <span class="hint-tag">beklenen davranış</span>
+              <span>
+                <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">HAVING COUNT(*)&gt;=5</code>.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-q-num">Q · 07</span>
+            <span class="badge med">orta</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q-block">
+              <div class="demo-q-head">
+                <span><span class="pre">›</span> botuna sor</span>
+                <button class="copy-btn" data-copy="q-7">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="demo-q-text" id="q-7">$10'dan fazla gelir getiren albümler?</div>
+            </div>
+            <div class="demo-hint">
+              <span class="hint-tag">beklenen davranış</span>
+              <span>
+                4-tablo JOIN (<code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">InvoiceLine + Track + Album + Artist</code>), ~64 albüm.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-q-num">Q · 08</span>
+            <span class="badge med">orta</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q-block">
+              <div class="demo-q-head">
+                <span><span class="pre">›</span> botuna sor</span>
+                <button class="copy-btn" data-copy="q-8">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="demo-q-text" id="q-8">2024 aylık ciro (sıfır aylar dahil)</div>
+            </div>
+            <div class="demo-hint">
+              <span class="hint-tag">beklenen davranış</span>
+              <span>
+                <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">WITH months VALUES</code> + <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">LEFT JOIN</code> — D1 compound SELECT limit aşmasın diye <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">VALUES</code> syntax.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── Zor ─── -->
+        <h3 class="demo-sub">Zor — 3 soru</h3>
+
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-q-num">Q · 09</span>
+            <span class="badge hard">zor</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q-block">
+              <div class="demo-q-head">
+                <span><span class="pre">›</span> botuna sor</span>
+                <button class="copy-btn" data-copy="q-9">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="demo-q-text" id="q-9">Çalışanları gelir bazında RANK() ile sırala</div>
+            </div>
+            <div class="demo-hint">
+              <span class="hint-tag">beklenen davranış</span>
+              <span>
+                Window function (<code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">RANK() OVER (ORDER BY SUM(Total) DESC)</code>).
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-q-num">Q · 10</span>
+            <span class="badge hard">zor</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q-block">
+              <div class="demo-q-head">
+                <span><span class="pre">›</span> botuna sor</span>
+                <button class="copy-btn" data-copy="q-10">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="demo-q-text" id="q-10">Hiç satılmamış parçalar?</div>
+            </div>
+            <div class="demo-hint">
+              <span class="hint-tag">beklenen davranış</span>
+              <span>
+                Anti-join pattern (<code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">NOT IN (SELECT TrackId FROM InvoiceLine)</code>), 1519 parça.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-q-num">Q · 11</span>
+            <span class="badge hard">zor</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q-block">
+              <div class="demo-q-head">
+                <span><span class="pre">›</span> botuna sor</span>
+                <button class="copy-btn" data-copy="q-11">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="demo-q-text" id="q-11">Her türün toplam cirodaki yüzdesi?</div>
+            </div>
+            <div class="demo-hint">
+              <span class="hint-tag">beklenen davranış</span>
+              <span>
+                Correlated subquery, Rock %35.5 en üstte.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── Wow ─── -->
+        <h3 class="demo-sub">🚀 Wow — 1 soru (kullanım: 26:00 civarı)</h3>
+
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-q-num">Q · 12</span>
+            <span class="badge wow">wow</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q-block">
+              <div class="demo-q-head">
+                <span><span class="pre">›</span> botuna sor</span>
+                <button class="copy-btn" data-copy="q-12">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="demo-q-text" id="q-12">Aylık ciro büyüme oranı (MoM)?</div>
+            </div>
+            <div class="demo-hint">
+              <span class="hint-tag">beklenen davranış</span>
+              <span>
+                CTE chain + <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">LAG</code> window function. Bot 3 logical hop'u &lt;3 sn'de kurar, insan Excel'de 15 dk uğraşır. En büyük düşüş Kasım 2023 −36.84%.
+              </span>
+            </div>
+            <div class="demo-note">
+              <span class="note-tag">pedagojik not</span>
+              Workshop'un finale doğru "vay be" anı. Window function + CTE'nin gücünü gösterir.
+            </div>
+          </div>
+        </div>
+
+        <!-- ─── Trap ─── -->
+        <h3 class="demo-sub">🪤 Trap — 2 soru (kullanım: 22:00-26:00 arası)</h3>
+
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-q-num">T · 01</span>
+            <span class="badge trap">trap</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q-block">
+              <div class="demo-q-head">
+                <span><span class="pre">›</span> botuna sor</span>
+                <button class="copy-btn" data-copy="q-t1">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="demo-q-text" id="q-t1">Sanatçı başına gelir? (top 10)</div>
+            </div>
+            <div class="demo-hint demo-hint--trap">
+              <span class="hint-tag">trap</span>
+              <span>
+                Bot <code style="font-family:'JetBrains Mono',monospace;color:var(--warn);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">Track.UnitPrice</code> (liste fiyatı) kullanmaya meyilli, ama gerçek gelir <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">InvoiceLine.UnitPrice × Quantity</code>. test step trap'i ortaya çıkarmaz — bot doğru tabloya bakıyor mu önemli. Doğru cevap: Iron Maiden $138.60, U2 $105.93, Metallica $90.09.
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div class="demo-card">
+          <div class="demo-head">
+            <span class="demo-q-num">T · 02</span>
+            <span class="badge trap">trap</span>
+          </div>
+          <div class="demo-body">
+            <div class="demo-q-block">
+              <div class="demo-q-head">
+                <span><span class="pre">›</span> botuna sor</span>
+                <button class="copy-btn" data-copy="q-t2">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="demo-q-text" id="q-t2">Bu yıl en aktif müşteriler kim?</div>
+            </div>
+            <div class="demo-hint demo-hint--trap">
+              <span class="hint-tag">trap</span>
+              <span>
+                "Bu yıl" muğlak — 2026 (gerçek "bu yıl") veri yok (latest 2025). İyi agent "2025 mi kastettiniz?" diye sorar. "Aktif" de muğlak — sipariş sayısı mı, ciro mu, son tarih mi? İyi agent her iki belirsizliği de sorar.
+              </span>
+            </div>
           </div>
         </div>
       </section>
