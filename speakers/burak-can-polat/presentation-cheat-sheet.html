@@ -812,45 +812,54 @@
       <section id="what">
         <div class="sec-head">
           <span class="sec-num">01 /</span>
-          <h2 class="sec-title">Bu workshop nedir?</h2>
+          <h2 class="sec-title">Bu Workshop Nedir?</h2>
           <span class="sec-aside"><span class="pill">~30 dk</span></span>
         </div>
 
         <p class="prose">
-          Bu workshop <strong>30 dakikalık, eller-klavyede</strong> bir oturumdur. Beraber
-          yazıyoruz, beraber kuruyoruz — <strong>hiçbir şey import etmiyorsun</strong>. Adım
-          adım birlikte ilerleyeceğiz; sonunda kendi n8n hesabında çalışan,
-          Türkçe konuşulan bir <code>text-to-SQL</code> Telegram botun olacak.
+          <strong>30 dakika boyunca canlı</strong>, beraber, sıfırdan bir Telegram bot
+          kuracağız. <strong>Import yok</strong> — her node'u kendin oluşturacaksın.
+          Sonunda kendi n8n instance'ında <strong>Türkçe SQL sorabilen</strong> bir botun
+          olacak.
         </p>
 
         <div class="trio">
           <div class="trio-card">
             <div class="trio-label"><span class="lbl-tick">▶</span> Sonunda elinde olacak</div>
-            <ul>
-              <li>Çalışan Telegram botu</li>
-              <li>n8n workflow'u (kendi hesabında)</li>
-              <li>2 HTTP Tool ile bağlı AI Agent</li>
-              <li>Chinook DB'ye Türkçe sorgu</li>
-            </ul>
+            <p class="prose">
+              Telegram'dan <code>"en çok satan 5 müzik türü"</code> yazınca
+              <strong>Markdown tablo</strong> dönen kendi botun. Chat geçmişi
+              hatırlanan, hatadan kendini düzelten, <strong>salt-okunur SQL</strong>
+              üreten bir agent.
+            </p>
           </div>
           <div class="trio-card">
             <div class="trio-label"><span class="lbl-tick">▶</span> Adımlar (yüksek seviye)</div>
             <div class="seq">
-              <div class="step"><span class="n">1.</span>Telegram bot oluştur</div>
-              <div class="step"><span class="n">2.</span>n8n workflow kur</div>
-              <div class="step"><span class="n">3.</span>2 HTTP tool tanımla</div>
-              <div class="step"><span class="n">4.</span>System prompt yapıştır</div>
-              <div class="step"><span class="n">5.</span>Test et &amp; konuş</div>
+              <span class="step"><span class="n">›</span>BotFather</span>
+              <span class="arrow"> → </span>
+              <span class="step"><span class="n">›</span>n8n credentials</span>
+              <span class="arrow"> → </span>
+              <span class="step"><span class="n">›</span>Telegram Trigger</span>
+              <span class="arrow"> → </span>
+              <span class="step"><span class="n">›</span>AI Agent</span>
+              <span class="arrow"> → </span>
+              <span class="step"><span class="n">›</span>2 HTTP Tool</span>
+              <span class="arrow"> → </span>
+              <span class="step"><span class="n">›</span>System Prompt</span>
+              <span class="arrow"> → </span>
+              <span class="step"><span class="n">›</span>Telegram Send</span>
+              <span class="arrow"> → </span>
+              <span class="step"><span class="n">›</span>Test.</span>
             </div>
           </div>
           <div class="trio-card">
             <div class="trio-label"><span class="lbl-tick">▶</span> Önkoşullar</div>
-            <ul>
-              <li>Telegram hesabı</li>
-              <li>n8n erişimi (self-hosted veya Cloud)</li>
-              <li>OpenRouter API key</li>
-              <li>Tarayıcı + 30 dk dikkat</li>
-            </ul>
+            <p class="prose">
+              <strong>Telegram hesabı</strong> · <strong>n8n erişimi</strong>
+              (self-hosted veya Cloud) · <strong>OpenRouter API key</strong>
+              (<code>free tier yeterli</code>).
+            </p>
           </div>
         </div>
       </section>
