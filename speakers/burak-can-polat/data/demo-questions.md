@@ -8,6 +8,28 @@ and as a Q&A backup if the room goes quiet.
 
 ---
 
+## 🎯 Açılış Sorusu — SQL Önizleme (use as opener, before Q1)
+
+**Q0. Top 5 sanatçı için SQL sorgusu yaz, sadece SQL'i göster, ÇALIŞTIRMA.**
+
+Trap: Sistem promptu "HERHANGİ bir veri sorusu için ÖNCE generate_and_test_sql çağır" diyor — bot, user'ın açık `ÇALIŞTIRMA` emrini bu yönergeyi override eden bir sinyal olarak yorumlamalı. İyi agent hiç tool çağırmaz, sadece SQL'i markdown code block içinde döker.
+
+```sql
+-- Beklenen SQL (bot şuna yakın bir şey üretmeli):
+SELECT ar.Name AS Sanatçı, COUNT(*) AS SatışSayısı
+FROM InvoiceLine il
+JOIN Track t ON il.TrackId = t.TrackId
+JOIN Album al ON t.AlbumId = al.AlbumId
+JOIN Artist ar ON al.ArtistId = ar.ArtistId
+GROUP BY ar.ArtistId
+ORDER BY SatışSayısı DESC
+LIMIT 5;
+```
+
+**Pedagojik değer:** Audience bot'un altında ne ürettiğini görür (şeffaflık) + araç çağırmadan da SQL üretebildiğini fark eder. T1 trap'inden önce gelir.
+
+---
+
 ## ⭐ Wow question (use this around 26:00 in the 30-min plan)
 
 **Q12. What is the month-over-month revenue growth rate for the entire catalog?**
@@ -57,15 +79,16 @@ LIMIT 10;
 **T2. "Most active customers this year"**
 
 Trap: agent filters on `Customer` with a date predicate, but `Customer` has
-no date column. Or filters `InvoiceDate > '2026-01-01'` against a static
-dataset whose latest year is 2013 — silent zero-result.
+no date column. Or filters `InvoiceDate >= '2026-01-01'` against a dataset
+whose latest year is 2025 — silent zero-result. Good agent asks: "did you
+mean 2025? (latest year with data)".
 
 ```sql
--- CORRECT (the agent should ask: "this year means 2013, right?")
+-- CORRECT (the agent should ask: "this year means 2025, right?")
 SELECT c.FirstName || ' ' || c.LastName AS Customer, COUNT(*) AS Orders
 FROM Invoice i
 JOIN Customer c ON i.CustomerId = c.CustomerId
-WHERE strftime('%Y', i.InvoiceDate) = '2013'
+WHERE strftime('%Y', i.InvoiceDate) = '2025'
 GROUP BY c.CustomerId
 ORDER BY Orders DESC
 LIMIT 10;
@@ -84,7 +107,7 @@ LIMIT 10;
 | 5 | Medium | Hangi destek temsilcisi en çok geliri sağlıyor? | `SELECT e.FirstName\|\|' '\|\|e.LastName Rep, ROUND(SUM(i.Total),2) Revenue FROM Employee e JOIN Customer c ON c.SupportRepId=e.EmployeeId JOIN Invoice i ON i.CustomerId=c.CustomerId GROUP BY e.EmployeeId ORDER BY Revenue DESC;` | 3-table JOIN through bridge |
 | 6 | Medium | En az 5 faturası olan ülkeler için ortalama sipariş tutarı? | `SELECT BillingCountry, ROUND(AVG(Total),2) AOV, COUNT(*) Invoices FROM Invoice GROUP BY BillingCountry HAVING COUNT(*)>=5 ORDER BY AOV DESC;` | HAVING clause |
 | 7 | Medium | $10'dan fazla gelir getiren albümler? | `SELECT al.Title, ar.Name Artist, ROUND(SUM(il.UnitPrice*il.Quantity),2) Revenue FROM InvoiceLine il JOIN Track t ON il.TrackId=t.TrackId JOIN Album al ON t.AlbumId=al.AlbumId JOIN Artist ar ON al.ArtistId=ar.ArtistId GROUP BY al.AlbumId HAVING Revenue>10 ORDER BY Revenue DESC;` | 4-table JOIN |
-| 8 | Medium | 2011 aylık ciro (sıfır aylar dahil) | `WITH months(m) AS (SELECT '2011-01' UNION SELECT '2011-02' UNION SELECT '2011-03' UNION SELECT '2011-04' UNION SELECT '2011-05' UNION SELECT '2011-06' UNION SELECT '2011-07' UNION SELECT '2011-08' UNION SELECT '2011-09' UNION SELECT '2011-10' UNION SELECT '2011-11' UNION SELECT '2011-12') SELECT m.m, COALESCE(ROUND(SUM(i.Total),2),0) Revenue FROM months m LEFT JOIN Invoice i ON strftime('%Y-%m',i.InvoiceDate)=m.m GROUP BY m.m;` | LEFT JOIN + zero-fill |
+| 8 | Medium | 2024 aylık ciro (sıfır aylar dahil) | `WITH months(m) AS (VALUES ('2024-01'),('2024-02'),('2024-03'),('2024-04'),('2024-05'),('2024-06'),('2024-07'),('2024-08'),('2024-09'),('2024-10'),('2024-11'),('2024-12')) SELECT m.m AS Month, COALESCE(ROUND(SUM(i.Total),2),0) AS Revenue FROM months m LEFT JOIN Invoice i ON strftime('%Y-%m',i.InvoiceDate)=m.m GROUP BY m.m ORDER BY m.m;` | LEFT JOIN + zero-fill (uses VALUES — D1 caps UNION-chain length) |
 | 9 | Hard | Çalışanları gelir bazında RANK() ile sırala | `SELECT e.FirstName\|\|' '\|\|e.LastName, ROUND(SUM(i.Total),2) Rev, RANK() OVER (ORDER BY SUM(i.Total) DESC) Rnk FROM Employee e JOIN Customer c ON c.SupportRepId=e.EmployeeId JOIN Invoice i ON i.CustomerId=c.CustomerId GROUP BY e.EmployeeId;` | RANK window function |
 | 10 | Hard | Hiç satılmamış parçalar? | `SELECT t.Name, al.Title FROM Track t JOIN Album al ON t.AlbumId=al.AlbumId WHERE t.TrackId NOT IN (SELECT DISTINCT TrackId FROM InvoiceLine);` | Anti-join pattern |
 | 11 | Hard | Her türün toplam cirodaki yüzdesi? | `SELECT g.Name, ROUND(100.0*SUM(il.UnitPrice*il.Quantity)/(SELECT SUM(UnitPrice*Quantity) FROM InvoiceLine),2) PctRevenue FROM InvoiceLine il JOIN Track t ON il.TrackId=t.TrackId JOIN Genre g ON t.GenreId=g.GenreId GROUP BY g.Name ORDER BY PctRevenue DESC;` | Correlated share-of-total |
