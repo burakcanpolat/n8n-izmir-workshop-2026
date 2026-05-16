@@ -1614,34 +1614,26 @@
               "AI Agent" ara, sürükle). Aşağıdaki ayarları yap:
             </p>
 
-            <!-- AGENT TYPE -->
+            <!-- AGENT TYPE (dropdown — not pasteable) -->
             <div class="code-block">
               <div class="code-head">
                 <span class="code-label">
                   <span class="pre">$</span>
                   <span class="lbl-text">Agent type (UI dropdown)</span>
                 </span>
-                <button class="copy-btn" data-copy="step-04-agenttype">
-                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
-                  <span class="lbl">copy</span>
-                </button>
               </div>
-              <div class="code-body" id="step-04-agenttype">Tools Agent</div>
+              <div class="code-body"><span class="tok-punc">▼</span> Tools Agent</div>
             </div>
 
-            <!-- PROMPT TYPE -->
+            <!-- PROMPT TYPE (dropdown — not pasteable) -->
             <div class="code-block">
               <div class="code-head">
                 <span class="code-label">
                   <span class="pre">$</span>
                   <span class="lbl-text">Prompt Type (UI dropdown)</span>
                 </span>
-                <button class="copy-btn" data-copy="step-04-prompttype">
-                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
-                  <span class="lbl">copy</span>
-                </button>
               </div>
-              <div class="code-body" id="step-04-prompttype">Define</div>
+              <div class="code-body"><span class="tok-punc">▼</span> Define</div>
             </div>
 
             <!-- PROMPT EXPRESSION -->
@@ -1765,73 +1757,119 @@
         </div>
       </section>
 
+      <div class="phase-divider">
+        <span class="phase-tag">»</span>Faz 2 — Araçlar + Beyin (~15 dk)
+      </div>
+
+      <!-- ─── STEP 07: Tool 1 — generate_and_test_sql ─── -->
       <section id="step-07">
         <div class="sec-head">
           <span class="sec-num">06 /</span>
-          <h2 class="sec-title">Adım 4 — Tool 1 ekle</h2>
+          <h2 class="sec-title">Adım 7 — Tool 1: generate_and_test_sql ekle (HTTP Request Tool)</h2>
           <span class="sec-aside"><span class="pill">HTTP Tool · ~4 dk</span></span>
         </div>
 
         <div class="build-card">
           <div class="build-step-bar">
             <span class="step-num-pill">07</span>
-            <span class="step-title">Tool 1: <span class="mono">generate_and_test_sql</span></span>
+            <span class="step-title">Tool 1: <span class="mono">generate_and_test_sql</span> (HTTP Request Tool)</span>
             <span class="step-time">~ 4 dk</span>
           </div>
           <div class="build-body">
             <p class="prose">
-              AI Agent'a ilk HTTP tool'unu ekle. Bu tool üretilen SQL sorgusunu
-              <code>LIMIT 5</code> ile <strong>kuru-çalıştırır</strong> (dry-run): yanıt
-              başarılıysa AI'a güveni gelir, hata varsa AI sorguyu düzeltip tekrar
-              dener. <strong>Önce her zaman bu çağrılır</strong>, sonra
-              <code>execute_sql</code>.
+              AI Agent altındaki "+" → "Tool" → "HTTP Request Tool" seç.
+              <strong>ÖNEMLİ:</strong> "HTTP Request Tool" — Tool suffix'i olan, normal HTTP Request değil.
+              (Node type: <code>n8n-nodes-base.httpRequestTool</code> v4.4.)
+              Aşağıdaki alanları doldur:
             </p>
 
-            <!-- CODE BLOCK A -->
+            <!-- ROW 1: TOOL NAME -->
             <div class="code-block">
               <div class="code-head">
                 <span class="code-label">
                   <span class="pre">$</span>
-                  <span class="lbl-text">Tool Description (toolDescription alanına yapıştır)</span>
+                  <span class="lbl-text">Tool Name (Name alanı)</span>
                 </span>
-                <button class="copy-btn" data-copy="tool-desc">
+                <button class="copy-btn" data-copy="step-07-toolname">
                   <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
                   <span class="lbl">copy</span>
                 </button>
               </div>
-              <div class="code-body" id="tool-desc">Validates a SQL query by running it with LIMIT 5 against the Chinook SQLite backend. Returns {rows:[...]} on success, {error:'...'} on failure. ALWAYS call this before execute_sql.</div>
+              <div class="code-body" id="step-07-toolname">generate_and_test_sql</div>
             </div>
 
-            <!-- CODE BLOCK B -->
+            <!-- ROW 2: TOOL DESCRIPTION -->
             <div class="code-block">
               <div class="code-head">
                 <span class="code-label">
                   <span class="pre">$</span>
-                  <span class="lbl-text">Endpoint URL (URL alanına yapıştır)</span>
+                  <span class="lbl-text">Tool Description (Description alanı — tam metni yapıştır)</span>
                 </span>
-                <button class="copy-btn" data-copy="endpoint-url">
+                <button class="copy-btn" data-copy="step-07-tooldesc">
                   <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
                   <span class="lbl">copy</span>
                 </button>
               </div>
-              <div class="code-body" id="endpoint-url"><span class="tok-url">https://chinook-workshop.bitter-brook-7999.workers.dev/test</span></div>
+              <div class="code-body" id="step-07-tooldesc">Validates a SQL query by running it with LIMIT 5 against the Chinook SQLite backend. Returns {rows:[...]} on success, {error:'...'} on failure. ALWAYS call this before execute_sql.</div>
             </div>
 
-            <!-- CODE BLOCK C -->
+            <!-- ROW 3: METHOD -->
             <div class="code-block">
               <div class="code-head">
                 <span class="code-label">
                   <span class="pre">$</span>
-                  <span class="lbl-text">Body parameter — name: <code style="color:var(--accent);background:transparent;border:none;padding:0">sql</code>, value:</span>
+                  <span class="lbl-text">Method</span>
                 </span>
-                <button class="copy-btn" data-copy="body-expr">
+                <button class="copy-btn" data-copy="step-07-method">
                   <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
                   <span class="lbl">copy</span>
                 </button>
               </div>
-              <div class="code-body" id="body-expr"><span class="tok-punc">={{</span> <span class="tok-fn">$fromAI</span><span class="tok-punc">(</span><span class="tok-str">'sql'</span><span class="tok-punc">,</span> <span class="tok-str">'The SQL SELECT query to dry-run with LIMIT 5. SQLite syntax only.'</span><span class="tok-punc">,</span> <span class="tok-str">'string'</span><span class="tok-punc">)</span> <span class="tok-punc">}}</span></div>
+              <div class="code-body" id="step-07-method">POST</div>
             </div>
 
+            <!-- ROW 4: URL -->
+            <div class="code-block">
+              <div class="code-head">
+                <span class="code-label">
+                  <span class="pre">$</span>
+                  <span class="lbl-text">URL</span>
+                </span>
+                <button class="copy-btn" data-copy="step-07-url">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="code-body" id="step-07-url"><span class="tok-url">https://chinook-workshop.bitter-brook-7999.workers.dev/test</span></div>
+            </div>
+
+            <!-- ROW 5: BODY EXPRESSION -->
+            <div class="code-block">
+              <div class="code-head">
+                <span class="code-label">
+                  <span class="pre">$</span>
+                  <span class="lbl-text">Body — "Using Fields Below" seç → Add Field → name: <code style="color:var(--accent);background:transparent;border:none;padding:0">sql</code>, value:</span>
+                </span>
+                <button class="copy-btn" data-copy="step-07-bodyexpr">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </div>
+              <div class="code-body" id="step-07-bodyexpr">={{ $fromAI('sql', 'The SQL SELECT query to dry-run with LIMIT 5. SQLite syntax only.', 'string') }}</div>
+            </div>
+
+            <!-- AMBER WARNING: $fromAI manual rename -->
+            <div class="callout" role="note">
+              <span class="callout-label">Uyarı</span>
+              <strong>AI wand butonuna BASMA.</strong> Otomatik doldurma
+              <code>parameters0_Value</code> gibi anlamsız isimler üretir, LLM bunu
+              tool schema'da göremez. Manuel olarak <code>'sql'</code> yaz.
+            </div>
+
+            <div class="callout callout--ok" role="note">
+              <span class="callout-label">Beklenen sonuç</span>
+              Tool sub-node AI Agent'a bağlı, "Tool loaded" durumu görünür.
+            </div>
           </div>
         </div>
       </section>
