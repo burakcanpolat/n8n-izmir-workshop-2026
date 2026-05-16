@@ -1034,6 +1034,110 @@
     .ep-table th, .ep-table td { padding: 8px 10px; }
     .callout { padding: 10px 12px; font-size: 13px; }
   }
+
+  /* ─────────────────────────────────────────────
+     SCAN / QR STRIP (above hero)
+     ───────────────────────────────────────────── */
+  .qr-strip { margin-bottom: 28px; }
+  .qr-strip-card {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 28px;
+    align-items: center;
+    padding: 24px 28px;
+    border: 1px solid var(--line);
+    background:
+      linear-gradient(180deg, rgba(168,225,12,0.05), transparent 70%),
+      var(--bg-elev);
+    border-radius: 8px;
+    position: relative;
+    overflow: hidden;
+  }
+  .qr-strip-card::before {
+    content: "";
+    position: absolute; inset: 0;
+    background-image: linear-gradient(to right, rgba(168,225,12,0.04) 1px, transparent 1px);
+    background-size: 40px 100%;
+    opacity: 0.5;
+    pointer-events: none;
+  }
+  .qr-strip-svg {
+    position: relative; z-index: 1;
+    width: 156px; height: 156px;
+    padding: 10px;
+    background: #FAFCFB;
+    border-radius: 6px;
+    border: 1px solid var(--line-2);
+    box-shadow: 0 0 0 1px rgba(168,225,12,0.18),
+                0 8px 24px -10px rgba(168,225,12,0.25);
+  }
+  .qr-strip-svg svg {
+    width: 100%; height: 100%;
+    display: block;
+    shape-rendering: crispEdges;
+  }
+  .qr-strip-text { position: relative; z-index: 1; min-width: 0; }
+  .qr-strip-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--ink-mute);
+    letter-spacing: 0.05em;
+    margin-bottom: 12px;
+    text-transform: uppercase;
+  }
+  .qr-strip-label .prompt { color: var(--accent); font-weight: 800; }
+  .qr-strip-title {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--ink);
+    letter-spacing: -0.01em;
+    margin: 0 0 8px;
+    line-height: 1.25;
+  }
+  .qr-strip-meta {
+    font-family: 'Geist', system-ui, sans-serif;
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--ink-mute);
+    margin: 0 0 14px;
+    max-width: 520px;
+  }
+  .qr-strip-url {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--accent);
+    background: var(--bg-code);
+    border: 1px solid var(--line);
+    padding: 6px 10px;
+    border-radius: 4px;
+    word-break: break-all;
+    text-decoration: none;
+  }
+  .qr-strip-url:hover {
+    color: #C7F33E;
+    border-color: rgba(168,225,12,0.4);
+  }
+
+  @media (max-width: 720px) {
+    .qr-strip-card {
+      grid-template-columns: 1fr;
+      text-align: center;
+      padding: 22px 18px;
+      gap: 18px;
+    }
+    .qr-strip-svg {
+      justify-self: center;
+      width: 176px; height: 176px;
+    }
+    .qr-strip-label { justify-content: center; }
+    .qr-strip-meta { max-width: none; }
+    .qr-strip-url { font-size: 10.5px; padding: 5px 9px; }
+  }
 </style>
 </head>
 <body>
@@ -1086,6 +1190,27 @@
          MAIN CONTENT
          ═══════════════════════════════════════════ -->
     <main>
+
+      <!-- ────── SCAN / QR STRIP (above hero) ────── -->
+      <section id="scan" class="qr-strip" aria-label="QR ile aç">
+        <div class="qr-strip-card">
+          <div class="qr-strip-svg" aria-hidden="true">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 41 41" shape-rendering="crispEdges"><path fill="#ffffff" d="M0 0h41v41H0z"/><path stroke="#000000" d="M4 4.5h7m1 0h1m2 0h3m2 0h1m1 0h2m1 0h1m1 0h1m2 0h7M4 5.5h1m5 0h1m1 0h1m1 0h1m2 0h1m4 0h1m1 0h2m1 0h2m1 0h1m5 0h1M4 6.5h1m1 0h3m1 0h1m2 0h1m5 0h1m2 0h3m1 0h2m2 0h1m1 0h3m1 0h1M4 7.5h1m1 0h3m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h2m2 0h1m1 0h3m1 0h1M4 8.5h1m1 0h3m1 0h1m2 0h6m4 0h2m3 0h1m1 0h1m1 0h3m1 0h1M4 9.5h1m5 0h1m6 0h1m3 0h6m1 0h1m1 0h1m5 0h1M4 10.5h7m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h1m1 0h7M12 11.5h1m1 0h1m1 0h1m4 0h1m1 0h1m2 0h1m1 0h1M4 12.5h1m1 0h2m1 0h3m1 0h1m2 0h1m1 0h1m1 0h6m1 0h1m2 0h1m2 0h1m1 0h2M5 13.5h3m1 0h1m6 0h1m5 0h3m2 0h1m2 0h2m1 0h4M4 14.5h3m1 0h1m1 0h1m3 0h3m1 0h1m2 0h1m3 0h1m1 0h3m1 0h3m2 0h1M4 15.5h1m1 0h1m1 0h1m3 0h9m2 0h1m7 0h1m1 0h1m1 0h2M4 16.5h2m4 0h3m2 0h2m2 0h1m4 0h1m1 0h1m1 0h2m1 0h3m1 0h2M5 17.5h2m1 0h1m3 0h2m1 0h1m4 0h2m1 0h2m1 0h1m1 0h1m2 0h1m1 0h3M4 18.5h1m1 0h1m1 0h4m1 0h1m1 0h9m2 0h1m1 0h1m1 0h1M5 19.5h1m1 0h1m3 0h1m5 0h2m1 0h1m4 0h3m1 0h6M4 20.5h1m1 0h3m1 0h1m2 0h1m1 0h3m1 0h1m2 0h1m1 0h4m1 0h2m1 0h3M5 21.5h1m5 0h2m3 0h1m2 0h1m4 0h1m1 0h5m1 0h2m1 0h2M6 22.5h1m1 0h3m3 0h2m1 0h1m1 0h2m7 0h1m1 0h3m1 0h2M4 23.5h2m1 0h1m3 0h1m3 0h1m4 0h1m5 0h1m2 0h2m1 0h1m2 0h1M5 24.5h1m3 0h2m1 0h4m2 0h1m2 0h2m2 0h1m2 0h1m2 0h1m1 0h2m1 0h1M4 25.5h2m2 0h2m2 0h3m1 0h1m1 0h2m1 0h3m3 0h1m1 0h2m2 0h1m2 0h1M6 26.5h1m1 0h3m2 0h1m1 0h1m1 0h2m1 0h2m2 0h5m1 0h2m1 0h4M5 27.5h2m2 0h1m1 0h1m2 0h2m2 0h1m1 0h1m1 0h2m2 0h1m1 0h3m4 0h2M4 28.5h1m1 0h1m2 0h2m2 0h2m2 0h1m1 0h3m4 0h7M12 29.5h1m2 0h1m3 0h5m1 0h2m1 0h1m3 0h2M4 30.5h7m1 0h2m1 0h1m2 0h1m1 0h1m1 0h3m1 0h3m1 0h1m1 0h1m2 0h1M4 31.5h1m5 0h1m1 0h1m2 0h1m2 0h2m2 0h4m1 0h2m3 0h5M4 32.5h1m1 0h3m1 0h1m2 0h1m2 0h2m1 0h1m1 0h1m1 0h1m1 0h8m1 0h2M4 33.5h1m1 0h3m1 0h1m1 0h3m3 0h1m5 0h1m1 0h2m3 0h1m1 0h2m1 0h1M4 34.5h1m1 0h3m1 0h1m1 0h2m1 0h1m2 0h1m5 0h2m1 0h5m1 0h2M4 35.5h1m5 0h1m3 0h1m1 0h6m1 0h1m3 0h2m1 0h3m3 0h1M4 36.5h7m1 0h3m3 0h5m2 0h1m3 0h2m1 0h1m1 0h1"/></svg>
+          </div>
+          <div class="qr-strip-text">
+            <span class="qr-strip-label">
+              <span class="prompt">&gt;</span> scan-to-open
+            </span>
+            <h2 class="qr-strip-title">Bu sayfayı kendi cihazında aç</h2>
+            <p class="qr-strip-meta">
+              Workshop boyunca telefon veya tabletinden takip et. Tüm SQL örnekleri tek tıkla kopyalanır.
+            </p>
+            <a class="qr-strip-url" href="https://burakcanpolat.github.io/n8n-izmir-workshop-2026/" target="_blank" rel="noopener">
+              ↗ burakcanpolat.github.io/n8n-izmir-workshop-2026
+            </a>
+          </div>
+        </div>
+      </section>
 
       <!-- ────── HERO ────── -->
       <section id="intro" class="hero">
