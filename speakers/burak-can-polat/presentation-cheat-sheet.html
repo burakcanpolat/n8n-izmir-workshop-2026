@@ -2911,10 +2911,123 @@ PlaylistTrack(PlaylistId, TrackId)
         </p>
       </section>
 
-      <footer>
-        <span>n8n-workshop / cheat-sheet · v0.1 · build-mockup-B</span>
-        <span class="turkish">çğıöşüÇĞİÖŞÜ ✓</span>
-        <span>İzmir · 2026-05-17</span>
+      <!-- ────── SECTION 9: HATA ────── -->
+      <section id="hata">
+        <div class="sec-head">
+          <span class="sec-num">09 /</span>
+          <h2 class="sec-title">Hata Yakalandığında Ne Yapılır?</h2>
+          <span class="sec-aside"><span class="pill">debug · ilk bakış</span></span>
+        </div>
+
+        <p class="prose">
+          Workshop sırasında bir şey çalışmazsa önce şu 4 senaryoyu kontrol et.
+          %90 ihtimalle hatayı burada bulursun.
+        </p>
+
+        <table class="ep-table" role="table" aria-label="Yaygın hatalar ve kontrol listesi">
+          <thead>
+            <tr>
+              <th scope="col">Belirti</th>
+              <th scope="col">Ne kontrol et</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td class="ep-desc"><strong>Bot tool çağırmıyor</strong></td>
+              <td class="ep-desc">
+                <code>$fromAI</code> ifadesinin yazımı doğru mu
+                (<code>'sql'</code> first arg, <code>type='string'</code>).
+                Tool Description'da <em>"ALWAYS call this..."</em> gibi net
+                direktif var mı.
+              </td>
+            </tr>
+            <tr>
+              <td class="ep-desc"><strong>Worker 400 dönüyor</strong></td>
+              <td class="ep-desc">
+                SQL'de yasak kelime mi var (<code>INSERT</code> /
+                <code>UPDATE</code> / <code>DELETE</code> / <code>DROP</code>
+                / ...) veya SQLite syntax hatası mı
+                (<code>ISNULL</code> yerine <code>COALESCE</code>; tarihler
+                için <code>strftime</code>).
+              </td>
+            </tr>
+            <tr>
+              <td class="ep-desc"><strong>Telegram "Bad Request: can't parse entities"</strong></td>
+              <td class="ep-desc">
+                Parse Mode <code>Markdown</code> olmalı,
+                <code>MarkdownV2</code> değil. AI Agent → output'unda
+                escape edilmemiş özel karakter var.
+              </td>
+            </tr>
+            <tr>
+              <td class="ep-desc"><strong>Bot Türkçe cevap vermiyor</strong></td>
+              <td class="ep-desc">
+                System Message'ın AI Agent → Options altına yapıştırıldığını
+                + son satırdaki dil yönlendirmesinin koptarılmadığını kontrol
+                et.
+              </td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="schema-note">
+          Detaylı kılavuz:
+          <a href="./failure-recovery.md"><code>failure-recovery.md</code></a>
+        </p>
+      </section>
+
+      <!-- ────── SECTION 10: SONRA ────── -->
+      <section id="sonra">
+        <div class="sec-head">
+          <span class="sec-num">10 /</span>
+          <h2 class="sec-title">Workshop Sonrası</h2>
+          <span class="sec-aside"><span class="pill">repo · bonus · iletişim</span></span>
+        </div>
+
+        <p class="prose">
+          Workshop bitti, bot çalıştı. Devam etmek istersen üç yol var.
+        </p>
+
+        <div class="trio">
+          <div class="trio-card">
+            <div class="trio-label"><span class="lbl-tick">▶</span> Code Tool ile aynı şeyi nasıl yaparsın?</div>
+            <p class="prose">
+              HTTP Tool yerine n8n'in <code>Code</code> node'unu kullanarak
+              SQL'i n8n içinden çalıştıran bir varyant da var. Devs için
+              ekstra örnek:
+              <a href="./bonus/dev-corner/README.md"><code>bonus/dev-corner/README.md</code></a>
+            </p>
+          </div>
+
+          <div class="trio-card">
+            <div class="trio-label"><span class="lbl-tick">▶</span> Bu workshop'u kendine adapte et</div>
+            <p class="prose">
+              Tüm kaynak:
+              <a href="https://github.com/onurpolat05/n8n-izmir-workshop-2026" target="_blank" rel="noopener"><code>github.com/onurpolat05/n8n-izmir-workshop-2026</code></a>
+              <br>
+              (<code>speakers/burak-can-polat/</code> altında)
+            </p>
+          </div>
+
+          <div class="trio-card">
+            <div class="trio-label"><span class="lbl-tick">▶</span> İletişim</div>
+            <p class="prose">
+              <!-- TODO: Burak to confirm profile URLs -->
+              LinkedIn:
+              <a href="https://linkedin.com/in/burakcanpolat" target="_blank" rel="noopener"><code>linkedin.com/in/burakcanpolat</code></a>
+              <br>
+              Web:
+              <a href="https://burakcanpolat.dev" target="_blank" rel="noopener"><code>burakcanpolat.dev</code></a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ────── SECTION 11: FOOTER ────── -->
+      <footer id="footer">
+        <span>Burak Can Polat · 2026-05-17 · n8n İzmir Workshop</span>
+        <span class="turkish">MIT · Made with terminal vibes ✦</span>
+        <span>Updated: 2026-05-16</span>
       </footer>
 
     </main>
