@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>n8n + Telegram + AI Agent — Doğal Dilden SQL'e</title>
+<title>n8n | Text to SQL Agent</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700;800&family=Geist:wght@400;500;600;700&display=swap" rel="stylesheet">
@@ -358,7 +358,7 @@
     font-size: 12.5px;
     color: var(--accent);
   }
-  /* Inline tips/hints under build steps — smaller, muted, italic so they
+  /* Inline tips/hints under build steps: smaller, muted, italic so they
      read as supplementary rather than core instruction. */
   .prose.hint { font-size: 13px; color: var(--ink-mute); font-style: italic; }
 
@@ -453,7 +453,7 @@
     color: var(--ink-dim);
     margin: 0 0 24px;
   }
-  /* Distinguish anchors from inline <code> — both use --accent otherwise. */
+  /* Distinguish anchors from inline <code>; both use --accent otherwise. */
   .schema-note a { text-decoration: underline; text-underline-offset: 3px; }
 
   /* ─────────────────────────────────────────────
@@ -875,7 +875,7 @@
   .prompt-toggle > summary:hover { color: var(--ink); }
   .prompt-toggle[open] > summary { color: var(--accent); margin-bottom: 8px; }
   .prompt-toggle pre.code-body { margin: 0; }
-  /* Cap TR system-prompt vertical footprint on projector — scroll internally
+  /* Cap TR system-prompt vertical footprint on projector; scroll internally
      once content exceeds ~420px. Applies to all prompt-toggle pre and the
      step-09 TR pre specifically. */
   .prompt-toggle pre.code-body,
@@ -1166,10 +1166,17 @@
         </div>
 
         <p class="prose">
-          Chinook, dijital bir müzik mağazasını modelleyen örnek bir
-          <strong>SQLite veritabanıdır</strong>. Workshop için 2021-2025 arası sipariş geçmişi
-          yüklendi — ~3500 parça, 11 tablo, gerçekçi ama anlaşılır boyut. Sıfırdan SQL
-          öğrenirken kullanılan standart dataset'lerden biri.
+          Chinook, açık kaynak bir <strong>SQLite örnek veritabanı</strong>: 11 tabloda
+          dijital bir müzik mağazasını modelliyor. Sanatçılar albümler çıkarır, albümler
+          parçalardan oluşur, müşteriler sipariş verir, faturalar bu siparişlerin
+          detayını tutar. Yani sadeleştirilmiş ama gerçekçi bir e-ticaret veri modeli
+          (~3.500 parça, 2021-2025 arası satış geçmişi).
+        </p>
+        <p class="prose">
+          Bu veri setini seçmemizin sebebi pedagojik: kafada tutulabilecek kadar küçük,
+          fakat <code>JOIN</code>, <code>GROUP BY</code>, alt sorgu ve window function
+          gibi tüm temel SQL desenlerini gösterebilecek kadar zengin. Yani agent'ın
+          ürettiği sorguları gözle okuyup doğrulayabilirsin.
         </p>
 
         <div class="tables-grid">
@@ -1187,8 +1194,8 @@
         </div>
 
         <p class="schema-note">
-          Tam ER diyagramı: <a href="./data/chinook-schema.mmd"><code>data/chinook-schema.mmd</code></a>
-          (Mermaid kaynak — VS Code/Mermaid Live'da aç)
+          Tam ER diyagramı: <a href="https://github.com/burakcanpolat/n8n-izmir-workshop-2026/blob/main/speakers/burak-can-polat/data/chinook-schema.mmd" target="_blank" rel="noopener"><code>data/chinook-schema.mmd</code></a>
+          (Mermaid kaynak: VS Code'da veya Mermaid Live'da aç)
         </p>
       </section>
 
@@ -1259,7 +1266,7 @@
             <!-- arrow: trigger → agent -->
             <line x1="340" y1="180" x2="340" y2="224" stroke="var(--accent)" stroke-width="1.5" marker-end="url(#arrow)"/>
 
-            <!-- 3. AI Agent (Tools Agent) — green, the brain -->
+            <!-- 3. AI Agent (Tools Agent): green, the brain -->
             <g>
               <rect x="220" y="228" width="240" height="68" rx="3"
                     fill="var(--accent)" stroke="var(--accent)" stroke-width="1.5"/>
@@ -1331,30 +1338,30 @@
 
             <!-- tools → worker (merge arrow) -->
             <line x1="820" y1="380" x2="850" y2="380" stroke="var(--accent-2)" stroke-width="1.2"/>
-            <line x1="850" y1="380" x2="850" y2="520" stroke="var(--accent-2)" stroke-width="1.2"/>
+            <line x1="850" y1="380" x2="850" y2="588" stroke="var(--accent-2)" stroke-width="1.2"/>
             <line x1="820" y1="452" x2="850" y2="452" stroke="var(--accent-2)" stroke-width="1.2"/>
-            <line x1="850" y1="520" x2="540" y2="520" stroke="var(--accent-2)" stroke-width="1.2" marker-end="url(#arrow-cyan)"/>
+            <line x1="850" y1="588" x2="540" y2="588" stroke="var(--accent-2)" stroke-width="1.2" marker-end="url(#arrow-cyan)"/>
 
             <!-- Cloudflare Worker -->
             <g>
-              <rect x="220" y="496" width="320" height="56" rx="3"
+              <rect x="220" y="560" width="320" height="56" rx="3"
                     fill="var(--bg-code)" stroke="var(--accent-2)" stroke-width="1.5"/>
-              <text x="380" y="518" font-family="JetBrains Mono, monospace" font-size="10"
+              <text x="380" y="582" font-family="JetBrains Mono, monospace" font-size="10"
                     fill="var(--accent-2)" text-anchor="middle" letter-spacing="1.5">EDGE</text>
-              <text x="380" y="538" font-family="JetBrains Mono, monospace" font-size="12"
+              <text x="380" y="602" font-family="JetBrains Mono, monospace" font-size="12"
                     fill="var(--ink)" text-anchor="middle" font-weight="700">Cloudflare Worker (/test, /execute)</text>
             </g>
 
             <!-- worker → d1 -->
-            <line x1="380" y1="552" x2="380" y2="592" stroke="var(--accent-2)" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
+            <line x1="380" y1="616" x2="380" y2="656" stroke="var(--accent-2)" stroke-width="1.5" marker-end="url(#arrow-cyan)"/>
 
             <!-- D1 -->
             <g>
-              <rect x="220" y="596" width="320" height="56" rx="3"
+              <rect x="220" y="660" width="320" height="56" rx="3"
                     fill="var(--bg-code)" stroke="var(--accent-2)" stroke-width="1.5"/>
-              <text x="380" y="618" font-family="JetBrains Mono, monospace" font-size="10"
+              <text x="380" y="682" font-family="JetBrains Mono, monospace" font-size="10"
                     fill="var(--accent-2)" text-anchor="middle" letter-spacing="1.5">DATA</text>
-              <text x="380" y="638" font-family="JetBrains Mono, monospace" font-size="12"
+              <text x="380" y="702" font-family="JetBrains Mono, monospace" font-size="12"
                     fill="var(--ink)" text-anchor="middle" font-weight="700">D1 (Chinook SQLite)</text>
             </g>
 
@@ -1409,10 +1416,10 @@
         </div>
 
         <p class="prose">
-          n8n bir SQLite dosyasına direkt erişemez — araya bir HTTP API koymamız lazım.
-          Bu işi Cloudflare Worker yapıyor: dünya çapında düşük latency, free tier'a sığar,
-          D1 (yönetilen SQLite) ile entegre. Worker iki endpoint sunuyor —
-          biri güvenli önizleme için, diğeri tam sonuç için.
+          n8n bir SQLite dosyasına doğrudan erişemez; araya bir HTTP API koymamız
+          gerekir. Bu işi Cloudflare Worker yapıyor: dünya çapında düşük latency,
+          free tier'a sığar, D1 (yönetilen SQLite) ile entegre. Worker iki endpoint
+          sunuyor: biri güvenli önizleme için, diğeri tam sonuç için.
         </p>
 
         <table class="ep-table" role="table" aria-label="Worker endpoint listesi">
@@ -1427,7 +1434,7 @@
           <tbody>
             <tr>
               <td class="ep-method">POST /test</td>
-              <td class="ep-desc">SQL'i <code>LIMIT 5</code> ile sarar — güvenli önizleme</td>
+              <td class="ep-desc">SQL'i <code>LIMIT 5</code> ile sarar (güvenli önizleme)</td>
               <td class="ep-mono"><code>{"sql": "..."}</code></td>
               <td class="ep-mono"><code>{"rows": [...]}</code> veya <code>{"error": "..."}</code></td>
             </tr>
@@ -1507,7 +1514,7 @@
               <input type="checkbox">
               <span class="check-text">Telegram hesabın hazır</span>
             </label>
-            <p class="check-help">mobil app veya web — telegram.org</p>
+            <p class="check-help">mobil app veya web: telegram.org</p>
           </li>
           <li>
             <label>
@@ -1542,14 +1549,14 @@
 
       <!-- ────── SECTION 6: BUILD STEPS (01-11) ────── -->
       <div class="phase-divider">
-        <span class="phase-tag" aria-hidden="true">»</span>Faz 1 — Temel (~8 dk)
+        <span class="phase-tag" aria-hidden="true">»</span>Faz 1: Temel (~8 dk)
       </div>
 
       <!-- ─── STEP 01: BotFather ─── -->
       <section id="step-01">
         <div class="sec-head">
           <span class="sec-num">06 /</span>
-          <h2 class="sec-title">Adım 1 — Telegram Bot oluştur (BotFather)</h2>
+          <h2 class="sec-title">Adım 1: Telegram Bot oluştur (BotFather)</h2>
           <span class="sec-aside"><span class="pill">Telegram · ~2 dk</span></span>
         </div>
 
@@ -1564,7 +1571,7 @@
               Telegram'da @BotFather ile sohbete başla.
               <code>/newbot</code> komutuyla yeni bot oluştur. İstediği bot adı +
               kullanıcı adını ver (kullanıcı adı <code>_bot</code> ile bitmeli).
-              Sonunda <strong>HTTP API token</strong>'ı verir — bunu güvenli bir
+              Sonunda <strong>HTTP API token</strong>'ı verir. Bunu güvenli bir
               yere kopyala.
             </p>
 
@@ -1585,7 +1592,7 @@
             <div class="callout callout--ok" role="note">
               <span class="callout-label">Beklenen sonuç</span>
               BotFather sana "Use this token to access the HTTP API:" diye
-              başlayan bir mesaj döner — token bu satırın altındadır.
+              başlayan bir mesaj döner; token bu satırın altındadır.
             </div>
           </div>
         </div>
@@ -1595,7 +1602,7 @@
       <section id="step-02">
         <div class="sec-head">
           <span class="sec-num">06 /</span>
-          <h2 class="sec-title">Adım 2 — n8n credentials kur</h2>
+          <h2 class="sec-title">Adım 2: n8n credentials kur</h2>
           <span class="sec-aside"><span class="pill">n8n UI · ~3 dk</span></span>
         </div>
 
@@ -1627,7 +1634,7 @@
 
             <div class="callout callout--ok" role="note">
               <span class="callout-label">Beklenen sonuç</span>
-              Credentials listesinde iki kayıt — yeşil tick (✓) işaretli.
+              Credentials listesinde iki kayıt görünmeli, ikisi de yeşil tick (✓) işaretli olmalı.
             </div>
           </div>
         </div>
@@ -1637,7 +1644,7 @@
       <section id="step-03">
         <div class="sec-head">
           <span class="sec-num">06 /</span>
-          <h2 class="sec-title">Adım 3 — Yeni workflow + Telegram Trigger ekle</h2>
+          <h2 class="sec-title">Adım 3: Yeni workflow + Telegram Trigger ekle</h2>
           <span class="sec-aside"><span class="pill">n8n canvas · ~3 dk</span></span>
         </div>
 
@@ -1667,14 +1674,14 @@
       <section id="step-04">
         <div class="sec-head">
           <span class="sec-num">06 /</span>
-          <h2 class="sec-title">Adım 4 — AI Agent node ekle (Tools Agent mode)</h2>
+          <h2 class="sec-title">Adım 4: AI Agent node ekle (Tools Agent mode)</h2>
           <span class="sec-aside"><span class="pill">n8n canvas · ~3 dk</span></span>
         </div>
 
         <div class="build-card">
           <div class="build-step-bar">
             <span class="step-num-pill">04</span>
-            <span class="step-title">AI Agent node — <span class="mono">Tools Agent</span></span>
+            <span class="step-title">AI Agent node: <span class="mono">Tools Agent</span></span>
             <span class="step-time">~ 3 dk</span>
           </div>
           <div class="build-body">
@@ -1683,7 +1690,7 @@
               "AI Agent" ara, sürükle). Aşağıdaki ayarları yap:
             </p>
 
-            <!-- AGENT TYPE (dropdown — not pasteable) -->
+            <!-- AGENT TYPE (dropdown, not pasteable) -->
             <div class="code-block">
               <div class="code-head">
                 <span class="code-label">
@@ -1694,7 +1701,7 @@
               <div class="code-body"><span class="tok-punc" aria-hidden="true">▼</span> Tools Agent</div>
             </div>
 
-            <!-- PROMPT TYPE (dropdown — not pasteable) -->
+            <!-- PROMPT TYPE (dropdown, not pasteable) -->
             <div class="code-block">
               <div class="code-head">
                 <span class="code-label">
@@ -1733,14 +1740,14 @@
       <section id="step-05">
         <div class="sec-head">
           <span class="sec-num">06 /</span>
-          <h2 class="sec-title">Adım 5 — OpenRouter Chat Model sub-node bağla</h2>
+          <h2 class="sec-title">Adım 5: OpenRouter Chat Model sub-node bağla</h2>
           <span class="sec-aside"><span class="pill">sub-node · ~2 dk</span></span>
         </div>
 
         <div class="build-card">
           <div class="build-step-bar">
             <span class="step-num-pill">05</span>
-            <span class="step-title">OpenRouter Chat Model — <span class="mono">claude-haiku-4.5</span></span>
+            <span class="step-title">OpenRouter Chat Model: <span class="mono">claude-haiku-4.5</span></span>
             <span class="step-time">~ 2 dk</span>
           </div>
           <div class="build-body">
@@ -1755,7 +1762,7 @@
               <div class="code-head">
                 <span class="code-label">
                   <span class="pre">$</span>
-                  <span class="lbl-text">Model — default (kararlı + hızlı + ucuz)</span>
+                  <span class="lbl-text">Model: default (kararlı + hızlı + ucuz)</span>
                 </span>
                 <button class="copy-btn" aria-label="Kopyala" data-copy="step-05-model">
                   <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
@@ -1766,8 +1773,8 @@
             </div>
 
             <p class="prose hint">
-              Alternatif modeller aşağıdaki "Model Alternatifleri" bölümünde —
-              istediğin zaman değiştir.
+              Alternatif modeller aşağıdaki "Model Alternatifleri" bölümünde
+              listelidir; istediğin zaman değiştir.
             </p>
 
             <div class="callout callout--ok" role="note">
@@ -1782,14 +1789,14 @@
       <section id="step-06">
         <div class="sec-head">
           <span class="sec-num">06 /</span>
-          <h2 class="sec-title">Adım 6 — Window Buffer Memory sub-node bağla</h2>
+          <h2 class="sec-title">Adım 6: Window Buffer Memory sub-node bağla</h2>
           <span class="sec-aside"><span class="pill">sub-node · ~2 dk</span></span>
         </div>
 
         <div class="build-card">
           <div class="build-step-bar">
             <span class="step-num-pill">06</span>
-            <span class="step-title">Window Buffer Memory — <span class="mono">Custom Key</span></span>
+            <span class="step-title">Window Buffer Memory: <span class="mono">Custom Key</span></span>
             <span class="step-time">~ 2 dk</span>
           </div>
           <div class="build-body">
@@ -1803,7 +1810,7 @@
               <div class="code-head">
                 <span class="code-label">
                   <span class="pre">$</span>
-                  <span class="lbl-text">Session Key — her Telegram chat'i ayrı geçmiş</span>
+                  <span class="lbl-text">Session Key: her Telegram chat'i ayrı geçmiş</span>
                 </span>
                 <button class="copy-btn" aria-label="Kopyala" data-copy="step-06-sessionkey">
                   <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
@@ -1827,14 +1834,14 @@
       </section>
 
       <div class="phase-divider">
-        <span class="phase-tag" aria-hidden="true">»</span>Faz 2 — Araçlar + Beyin (~15 dk)
+        <span class="phase-tag" aria-hidden="true">»</span>Faz 2: Araçlar + Beyin (~15 dk)
       </div>
 
-      <!-- ─── STEP 07: Tool 1 — generate_and_test_sql ─── -->
+      <!-- ─── STEP 07: Tool 1: generate_and_test_sql ─── -->
       <section id="step-07">
         <div class="sec-head">
           <span class="sec-num">06 /</span>
-          <h2 class="sec-title">Adım 7 — Tool 1: generate_and_test_sql ekle (HTTP Request Tool)</h2>
+          <h2 class="sec-title">Adım 7 · Tool 1: generate_and_test_sql ekle (HTTP Request Tool)</h2>
           <span class="sec-aside"><span class="pill">HTTP Tool · ~4 dk</span></span>
         </div>
 
@@ -1847,7 +1854,7 @@
           <div class="build-body">
             <p class="prose">
               AI Agent altındaki "+" → "Tool" → "HTTP Request Tool" seç.
-              <strong>ÖNEMLİ:</strong> "HTTP Request Tool" — Tool suffix'i olan, normal HTTP Request değil.
+              <strong>ÖNEMLİ:</strong> "HTTP Request Tool" (Tool suffix'i olan), normal HTTP Request değil.
               (Node type: <code>n8n-nodes-base.httpRequestTool</code> v4.4.)
               Aşağıdaki alanları doldur:
             </p>
@@ -1872,7 +1879,7 @@
               <div class="code-head">
                 <span class="code-label">
                   <span class="pre">$</span>
-                  <span class="lbl-text">Tool Description (Description alanı — tam metni yapıştır)</span>
+                  <span class="lbl-text">Tool Description (Description alanı: tam metni yapıştır)</span>
                 </span>
                 <button class="copy-btn" aria-label="Kopyala" data-copy="step-07-tooldesc">
                   <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
@@ -1917,7 +1924,7 @@
               <div class="code-head">
                 <span class="code-label">
                   <span class="pre">$</span>
-                  <span class="lbl-text">Body — "Using Fields Below" seç → Add Field → name: <code style="color:var(--accent);background:transparent;border:none;padding:0">sql</code>, value:</span>
+                  <span class="lbl-text">Body: "Using Fields Below" seç → Add Field → name: <code style="color:var(--accent);background:transparent;border:none;padding:0">sql</code>, value:</span>
                 </span>
                 <button class="copy-btn" aria-label="Kopyala" data-copy="step-07-bodyexpr">
                   <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
@@ -1943,11 +1950,11 @@
         </div>
       </section>
 
-      <!-- ─── STEP 08: Tool 2 — execute_sql ─── -->
+      <!-- ─── STEP 08: Tool 2: execute_sql ─── -->
       <section id="step-08">
         <div class="sec-head">
           <span class="sec-num">06 /</span>
-          <h2 class="sec-title">Adım 8 — Tool 2: execute_sql ekle (HTTP Request Tool)</h2>
+          <h2 class="sec-title">Adım 8 · Tool 2: execute_sql ekle (HTTP Request Tool)</h2>
           <span class="sec-aside"><span class="pill">HTTP Tool · ~3 dk</span></span>
         </div>
 
@@ -1959,7 +1966,7 @@
           </div>
           <div class="build-body">
             <p class="prose">
-              Aynı yapıyla bir tool daha ekle. URL'i ve tool description'ı değişiyor — geri kalan her şey aynı.
+              Aynı yapıyla bir tool daha ekle. Yalnızca URL ve tool açıklaması değişiyor; geri kalan her şey aynıdır.
             </p>
 
             <!-- ROW 1: TOOL NAME -->
@@ -1982,7 +1989,7 @@
               <div class="code-head">
                 <span class="code-label">
                   <span class="pre">$</span>
-                  <span class="lbl-text">Tool Description (Description alanı — tam metni yapıştır)</span>
+                  <span class="lbl-text">Tool Description (Description alanı: tam metni yapıştır)</span>
                 </span>
                 <button class="copy-btn" aria-label="Kopyala" data-copy="step-08-tooldesc">
                   <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
@@ -2027,7 +2034,7 @@
               <div class="code-head">
                 <span class="code-label">
                   <span class="pre">$</span>
-                  <span class="lbl-text">Body — "Using Fields Below" seç → Add Field → name: <code style="color:var(--accent);background:transparent;border:none;padding:0">sql</code>, value:</span>
+                  <span class="lbl-text">Body: "Using Fields Below" seç → Add Field → name: <code style="color:var(--accent);background:transparent;border:none;padding:0">sql</code>, value:</span>
                 </span>
                 <button class="copy-btn" aria-label="Kopyala" data-copy="step-08-bodyexpr">
                   <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
@@ -2049,7 +2056,7 @@
       <section id="step-09">
         <div class="sec-head">
           <span class="sec-num">06 /</span>
-          <h2 class="sec-title">Adım 9 — Sistem Promptu yapıştır</h2>
+          <h2 class="sec-title">Adım 9: Sistem Promptu yapıştır</h2>
           <span class="sec-aside"><span class="pill">System Message · ~2 dk</span></span>
         </div>
 
@@ -2061,7 +2068,7 @@
           </div>
           <div class="build-body">
             <p class="prose">
-              AI Agent node'unu aç → Options → "System Message" alanına aşağıdaki TR promptun tamamını yapıştır. EN versiyon altta toggle ile mevcut — istersen onu kullanabilirsin (workshop boyunca TR önerilir).
+              AI Agent node'unu aç → Options → "System Message" alanına aşağıdaki TR promptun tamamını yapıştır. EN versiyon altta toggle ile mevcuttur; istersen onu kullanabilirsin (workshop boyunca TR önerilir).
             </p>
 
             <!-- TR SYSTEM PROMPT (default) -->
@@ -2069,7 +2076,7 @@
               <div class="code-head">
                 <span class="code-label">
                   <span class="pre">$</span>
-                  <span class="lbl-text">Türkçe sistem promptu (default — yapıştır)</span>
+                  <span class="lbl-text">Türkçe sistem promptu (default, yapıştır)</span>
                 </span>
                 <button class="copy-btn" aria-label="Kopyala" data-copy="step-09-prompt-tr">
                   <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
@@ -2097,11 +2104,11 @@ Playlist(PlaylistId, Name)
 PlaylistTrack(PlaylistId, TrackId)
 
 # ARAÇLARIN
-1. generate_and_test_sql(sql) — SQL'i LIMIT 5 ile çalıştırır.
+1. generate_and_test_sql(sql): SQL'i LIMIT 5 ile çalıştırır.
    Başarılıysa {rows: [...]} döner; hatalıysa {error: "..."} döner.
-2. execute_sql(sql) — SQL'i olduğu gibi çalıştırır. {rows: [...]} döner.
+2. execute_sql(sql): SQL'i olduğu gibi çalıştırır. {rows: [...]} döner.
 
-# SÜREÇ — AYNEN UYGULA
+# SÜREÇ (AYNEN UYGULA)
 1. HERHANGİ bir veri sorusu için ÖNCE generate_and_test_sql çağır.
 2. Hata dönerse SQL'i düzelt ve 3 deneye kadar tekrar generate_and_test_sql çağır.
 3. Test başarılı olduğunda execute_sql'i AYNI SQL ile çalıştır.
@@ -2111,7 +2118,7 @@ PlaylistTrack(PlaylistId, TrackId)
 # KURALLAR
 - Sadece SQLite sözdizimi (ISNULL yerine COALESCE; tarihler için strftime()).
 - Salt-okunur: INSERT/UPDATE/DELETE/DROP/ALTER reddet.
-- Şemada olmayan tablo/sütun adı uydurma — sadece yukarıdakini kullan.
+- Şemada olmayan tablo/sütun adı uydurma; sadece yukarıdakini kullan.
 - Soru muğlaksa TEK bir açıklayıcı soru sor.
 - "Bu yıl" veya "şimdi" dediğinde 2025 olduğunu (veri setindeki en son yıl) kullanıcıya doğrulat.</pre>
             </div>
@@ -2151,11 +2158,11 @@ Playlist(PlaylistId, Name)
 PlaylistTrack(PlaylistId, TrackId)
 
 # YOUR TOOLS
-1. generate_and_test_sql(sql) — runs the SQL with LIMIT 5.
+1. generate_and_test_sql(sql): runs the SQL with LIMIT 5.
    Returns {rows: [...]} on success or {error: "..."} on failure.
-2. execute_sql(sql) — runs the SQL as-is. Returns {rows: [...]}.
+2. execute_sql(sql): runs the SQL as-is. Returns {rows: [...]}.
 
-# PROCESS — FOLLOW EXACTLY
+# PROCESS (FOLLOW EXACTLY)
 1. For ANY data question, FIRST call generate_and_test_sql.
 2. If it returns an error, fix the SQL and retry up to 3 times.
 3. Once the test succeeds, call execute_sql with the EXACT same SQL.
@@ -2165,7 +2172,7 @@ PlaylistTrack(PlaylistId, TrackId)
 # RULES
 - SQLite syntax only (COALESCE not ISNULL; strftime() for dates).
 - Read-only: refuse INSERT/UPDATE/DELETE/DROP/ALTER.
-- Never invent table or column names — use only what's in the schema above.
+- Never invent table or column names; use only what's in the schema above.
 - If the question is ambiguous, ask ONE clarifying question.
 - For "this year" or "current", confirm the user means 2025 (latest year with data).</pre>
               </div>
@@ -2173,7 +2180,7 @@ PlaylistTrack(PlaylistId, TrackId)
 
             <div class="callout" role="note">
               <span class="callout-label">Uyarı</span>
-              Sistem promptunu doğrudan System Message alanına yapıştır — Code node veya expression olarak değil. n8n'in <code>fx</code> toggle'ına basma.
+              Sistem promptunu doğrudan System Message alanına yapıştır, Code node veya expression olarak değil. n8n'in <code>fx</code> toggle'ına basma.
             </div>
 
             <div class="callout callout--ok" role="note">
@@ -2188,14 +2195,14 @@ PlaylistTrack(PlaylistId, TrackId)
       <section id="step-10">
         <div class="sec-head">
           <span class="sec-num">06 /</span>
-          <h2 class="sec-title">Adım 10 — Telegram Send node ekle (cevap döner)</h2>
+          <h2 class="sec-title">Adım 10: Telegram Send node ekle (cevap döner)</h2>
           <span class="sec-aside"><span class="pill">Telegram · ~2 dk</span></span>
         </div>
 
         <div class="build-card">
           <div class="build-step-bar">
             <span class="step-num-pill">10</span>
-            <span class="step-title">Telegram Send — cevabı kullanıcıya gönder</span>
+            <span class="step-title">Telegram Send: cevabı kullanıcıya gönder</span>
             <span class="step-time">~ 2 dk</span>
           </div>
           <div class="build-body">
@@ -2203,7 +2210,7 @@ PlaylistTrack(PlaylistId, TrackId)
               AI Agent'ın main çıkışına bir Telegram Send node bağla. Aşağıdaki ayarları yap:
             </p>
 
-            <!-- ROW 1: RESOURCE (dropdown — not pasteable) -->
+            <!-- ROW 1: RESOURCE (dropdown, not pasteable) -->
             <div class="code-block">
               <div class="code-head">
                 <span class="code-label">
@@ -2214,7 +2221,7 @@ PlaylistTrack(PlaylistId, TrackId)
               <div class="code-body"><span class="tok-punc" aria-hidden="true">▼</span> Message</div>
             </div>
 
-            <!-- ROW 2: OPERATION (dropdown — not pasteable) -->
+            <!-- ROW 2: OPERATION (dropdown, not pasteable) -->
             <div class="code-block">
               <div class="code-head">
                 <span class="code-label">
@@ -2230,7 +2237,7 @@ PlaylistTrack(PlaylistId, TrackId)
               <div class="code-head">
                 <span class="code-label">
                   <span class="pre">$</span>
-                  <span class="lbl-text">Chat ID (expression — Telegram Trigger'dan)</span>
+                  <span class="lbl-text">Chat ID (expression: Telegram Trigger'dan)</span>
                 </span>
                 <button class="copy-btn" aria-label="Kopyala" data-copy="step-10-chatid">
                   <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
@@ -2245,7 +2252,7 @@ PlaylistTrack(PlaylistId, TrackId)
               <div class="code-head">
                 <span class="code-label">
                   <span class="pre">$</span>
-                  <span class="lbl-text">Text (expression — AI Agent çıktısı)</span>
+                  <span class="lbl-text">Text (expression: AI Agent çıktısı)</span>
                 </span>
                 <button class="copy-btn" aria-label="Kopyala" data-copy="step-10-text">
                   <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
@@ -2255,7 +2262,7 @@ PlaylistTrack(PlaylistId, TrackId)
               <div class="code-body" id="step-10-text">={{ $json.output }}</div>
             </div>
 
-            <!-- ROW 5: PARSE MODE (dropdown — not pasteable) -->
+            <!-- ROW 5: PARSE MODE (dropdown, not pasteable) -->
             <div class="code-block">
               <div class="code-head">
                 <span class="code-label">
@@ -2266,7 +2273,7 @@ PlaylistTrack(PlaylistId, TrackId)
               <div class="code-body"><span class="tok-punc" aria-hidden="true">▼</span> Markdown</div>
             </div>
 
-            <!-- ROW 6: APPEND ATTRIBUTION (toggle — not pasteable) -->
+            <!-- ROW 6: APPEND ATTRIBUTION (toggle, not pasteable) -->
             <div class="code-block">
               <div class="code-head">
                 <span class="code-label">
@@ -2281,7 +2288,7 @@ PlaylistTrack(PlaylistId, TrackId)
             <div class="callout" role="note">
               <span class="callout-label">Uyarı</span>
               <strong><code>Parse Mode = Markdown</code></strong> (legacy/lenient).
-              MarkdownV2 seçersen bot Telegram'a yanıt gönderemez — özel karakterler
+              MarkdownV2 seçersen bot Telegram'a yanıt gönderemez; özel karakterler
               (<code>.</code> <code>-</code> <code>(</code> <code>)</code>) escape gerektirir.
             </div>
 
@@ -2297,7 +2304,7 @@ PlaylistTrack(PlaylistId, TrackId)
       <section id="step-11">
         <div class="sec-head">
           <span class="sec-num">06 /</span>
-          <h2 class="sec-title">Adım 11 — Kaydet + Aktive et + Bot'una merhaba de</h2>
+          <h2 class="sec-title">Adım 11: Kaydet + Aktive et + Bot'una merhaba de</h2>
           <span class="sec-aside"><span class="pill">Save + Activate · ~1 dk</span></span>
         </div>
 
@@ -2331,12 +2338,13 @@ PlaylistTrack(PlaylistId, TrackId)
         </div>
 
         <p class="sorular-intro">
-          15 sorudan oluşan canlı demo seti. Bot'a kopyala-yapıştır şeklinde gönder.
-          Trap soruları (<code>T1</code>, <code>T2</code>) özellikle eğitici — bot ne yaparsa onu izle.
+          15 sorudan oluşan demo seti. Sorgular doğrudan bot'a kopyala-yapıştır
+          olarak gönderilir. Trap soruları (<code>T1</code>, <code>T2</code>) bilinçli
+          olarak belirsizdir; agent'ın belirsizliği nasıl ele aldığı gözlem değeri taşır.
         </p>
 
         <!-- ─── Açılış ─── -->
-        <h3 class="demo-sub">🎯 Açılış — SQL Önizleme (yeni)</h3>
+        <h3 class="demo-sub">🎯 Açılış: SQL Önizleme</h3>
 
         <div class="demo-card">
           <div class="demo-head">
@@ -2360,15 +2368,11 @@ PlaylistTrack(PlaylistId, TrackId)
                 Bot tool çağırmaz (<code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">generate_and_test_sql</code>/<code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">execute_sql</code> atlanır), sadece markdown SQL bloğu döker. Audience şeffaflığı görür.
               </span>
             </div>
-            <div class="demo-note">
-              <span class="note-tag">pedagojik not</span>
-              Bot, system prompt'taki "önce <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:11.5px">generate_and_test_sql</code> çağır" direktifini user'ın "ÇALIŞTIRMA" emriyle override eder. İyi agent kullanıcıyı dinler.
-            </div>
           </div>
         </div>
 
         <!-- ─── Trivial ─── -->
-        <h3 class="demo-sub">Trivial — 1 soru</h3>
+        <h3 class="demo-sub">Trivial · 1 soru</h3>
 
         <div class="demo-card">
           <div class="demo-head">
@@ -2396,7 +2400,7 @@ PlaylistTrack(PlaylistId, TrackId)
         </div>
 
         <!-- ─── Kolay ─── -->
-        <h3 class="demo-sub">Kolay — 3 soru</h3>
+        <h3 class="demo-sub">Kolay · 3 soru</h3>
 
         <div class="demo-card">
           <div class="demo-head">
@@ -2474,7 +2478,7 @@ PlaylistTrack(PlaylistId, TrackId)
         </div>
 
         <!-- ─── Orta ─── -->
-        <h3 class="demo-sub">Orta — 4 soru</h3>
+        <h3 class="demo-sub">Orta · 4 soru</h3>
 
         <div class="demo-card">
           <div class="demo-head">
@@ -2570,14 +2574,14 @@ PlaylistTrack(PlaylistId, TrackId)
             <div class="demo-hint">
               <span class="hint-tag">beklenen davranış</span>
               <span>
-                <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">WITH months VALUES</code> + <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">LEFT JOIN</code> — D1 compound SELECT limit aşmasın diye <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">VALUES</code> syntax.
+                <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">WITH months VALUES</code> + <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">LEFT JOIN</code>. D1 compound SELECT limitini aşmamak için <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">VALUES</code> syntax tercih edilir.
               </span>
             </div>
           </div>
         </div>
 
         <!-- ─── Zor ─── -->
-        <h3 class="demo-sub">Zor — 3 soru</h3>
+        <h3 class="demo-sub">Zor · 3 soru</h3>
 
         <div class="demo-card">
           <div class="demo-head">
@@ -2655,7 +2659,7 @@ PlaylistTrack(PlaylistId, TrackId)
         </div>
 
         <!-- ─── Wow ─── -->
-        <h3 class="demo-sub">🚀 Wow — 1 soru (kullanım: 26:00 civarı)</h3>
+        <h3 class="demo-sub">🚀 Wow · 1 soru</h3>
 
         <div class="demo-card">
           <div class="demo-head">
@@ -2679,15 +2683,11 @@ PlaylistTrack(PlaylistId, TrackId)
                 CTE chain + <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">LAG</code> window function. Bot 3 logical hop'u &lt;3 sn'de kurar, insan Excel'de 15 dk uğraşır. En büyük düşüş Kasım 2023 −36.84%.
               </span>
             </div>
-            <div class="demo-note">
-              <span class="note-tag">pedagojik not</span>
-              Workshop'un finale doğru "vay be" anı. Window function + CTE'nin gücünü gösterir.
-            </div>
           </div>
         </div>
 
         <!-- ─── Trap ─── -->
-        <h3 class="demo-sub">🪤 Trap — 2 soru (kullanım: 22:00-26:00 arası)</h3>
+        <h3 class="demo-sub">🪤 Trap · 2 soru</h3>
 
         <div class="demo-card">
           <div class="demo-head">
@@ -2708,7 +2708,7 @@ PlaylistTrack(PlaylistId, TrackId)
             <div class="demo-hint demo-hint--trap">
               <span class="hint-tag">trap</span>
               <span>
-                Bot <code style="font-family:'JetBrains Mono',monospace;color:var(--warn);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">Track.UnitPrice</code> (liste fiyatı) kullanmaya meyilli, ama gerçek gelir <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">InvoiceLine.UnitPrice × Quantity</code>. test step trap'i ortaya çıkarmaz — bot doğru tabloya bakıyor mu önemli. Doğru cevap: Iron Maiden $138.60, U2 $105.93, Metallica $90.09.
+                Bot <code style="font-family:'JetBrains Mono',monospace;color:var(--warn);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">Track.UnitPrice</code> (liste fiyatı) kullanmaya meyilli, ama gerçek gelir <code style="font-family:'JetBrains Mono',monospace;color:var(--accent);background:var(--bg-code);padding:1px 5px;border-radius:3px;font-size:12px">InvoiceLine.UnitPrice × Quantity</code>. Test step trap'i ortaya çıkarmaz; bot doğru tabloya bakıyor mu, asıl mesele bu. Doğru cevap: Iron Maiden $138.60, U2 $105.93, Metallica $90.09.
               </span>
             </div>
           </div>
@@ -2733,7 +2733,7 @@ PlaylistTrack(PlaylistId, TrackId)
             <div class="demo-hint demo-hint--trap">
               <span class="hint-tag">trap</span>
               <span>
-                "Bu yıl" muğlak — 2026 (gerçek "bu yıl") veri yok (latest 2025). İyi agent "2025 mi kastettiniz?" diye sorar. "Aktif" de muğlak — sipariş sayısı mı, ciro mu, son tarih mi? İyi agent her iki belirsizliği de sorar.
+                "Bu yıl" muğlaktır: 2026 (gerçek "bu yıl") için veri yok (en son 2025). İyi agent "2025'i mi kastettiniz?" diye doğrular. "Aktif" de muğlaktır: sipariş sayısı mı, ciro mu, son tarih mi? İyi agent her iki belirsizliği de sorar.
               </span>
             </div>
           </div>
@@ -2749,8 +2749,9 @@ PlaylistTrack(PlaylistId, TrackId)
         </div>
 
         <p class="prose">
-          Workshop'a haiku-4.5 ile başladık ama OpenRouter'da 8 farklı model var —
-          bütçen, hızın, dil tercihin neyse seç. Hepsi tool calling destekliyor.
+          Workshop'a <code>claude-haiku-4.5</code> ile başlıyoruz; OpenRouter üzerinden 8
+          farklı modele tek API ile erişebilirsin. Bütçe, hız ve dil tercihine göre
+          seçim yapabilirsin. Tablodaki tüm modeller tool calling destekler.
         </p>
 
         <table class="ep-table" role="table" aria-label="OpenRouter model alternatifleri">
@@ -2776,7 +2777,7 @@ PlaylistTrack(PlaylistId, TrackId)
                 </button>
               </td>
               <td>Ücretsiz</td>
-              <td>⭐⭐ hızlı ama deneysel</td>
+              <td>⭐⭐</td>
               <td>⭐⭐⭐</td>
               <td class="ep-desc">Free denemelerin için; rate limit nedeniyle workshop ortamında yavaşlayabilir.</td>
             </tr>
@@ -2790,7 +2791,7 @@ PlaylistTrack(PlaylistId, TrackId)
                 </button>
               </td>
               <td>Ücretsiz</td>
-              <td>⭐⭐ yeterli</td>
+              <td>⭐⭐</td>
               <td>⭐⭐</td>
               <td class="ep-desc">Ücretsiz en güvenilir araç çağırma seçeneği; Türkçe kabul edilebilir.</td>
             </tr>
@@ -2806,7 +2807,7 @@ PlaylistTrack(PlaylistId, TrackId)
                 </button>
               </td>
               <td>Ucuz</td>
-              <td>⭐⭐⭐ Doğrulandı ✅</td>
+              <td>⭐⭐⭐</td>
               <td>⭐⭐⭐</td>
               <td class="ep-desc">14 sorudan 11'ini doğru yanıtladı; default.</td>
             </tr>
@@ -2820,7 +2821,7 @@ PlaylistTrack(PlaylistId, TrackId)
                 </button>
               </td>
               <td>Ucuz</td>
-              <td>⭐⭐⭐ tutarlı</td>
+              <td>⭐⭐⭐</td>
               <td>⭐⭐⭐</td>
               <td class="ep-desc">GPT-4 seviyesi kaliteyi düşük maliyetle.</td>
             </tr>
@@ -2834,7 +2835,7 @@ PlaylistTrack(PlaylistId, TrackId)
                 </button>
               </td>
               <td>Ucuz</td>
-              <td>⭐⭐⭐ güvenilir</td>
+              <td>⭐⭐⭐</td>
               <td>⭐⭐⭐</td>
               <td class="ep-desc">OpenAI'a aşina katılımcılar için tanıdık.</td>
             </tr>
@@ -2850,7 +2851,7 @@ PlaylistTrack(PlaylistId, TrackId)
                 </button>
               </td>
               <td>Standart</td>
-              <td>⭐⭐ iyi</td>
+              <td>⭐⭐</td>
               <td>⭐⭐⭐</td>
               <td class="ep-desc">Çok dilli güçlü model; veri analizi öne çıkar.</td>
             </tr>
@@ -2864,7 +2865,7 @@ PlaylistTrack(PlaylistId, TrackId)
                 </button>
               </td>
               <td>Standart</td>
-              <td>⭐⭐⭐ hızlı+güçlü</td>
+              <td>⭐⭐⭐</td>
               <td>⭐⭐⭐</td>
               <td class="ep-desc">n8n workshop önerilen LLM; free bittiyse buraya geç.</td>
             </tr>
@@ -2880,7 +2881,7 @@ PlaylistTrack(PlaylistId, TrackId)
                 </button>
               </td>
               <td>Premium</td>
-              <td>⭐⭐⭐ en güvenilir</td>
+              <td>⭐⭐⭐</td>
               <td>⭐⭐⭐</td>
               <td class="ep-desc">En iyi kalite gerektiğinde; en pahalı seçenek.</td>
             </tr>
@@ -2888,7 +2889,7 @@ PlaylistTrack(PlaylistId, TrackId)
         </table>
 
         <p class="prose">
-          İlk denemen için <code>anthropic/claude-haiku-4.5</code> ile başla —
+          İlk denemen için <code>anthropic/claude-haiku-4.5</code> ile başla;
           workshop boyunca test edildi ve kararlı çalışıyor.
           Ücretsiz tier istiyorsan <code>meta-llama/llama-3.3-70b-instruct:free</code> tercih et;
           <code>google/gemini-2.0-flash-exp:free</code> hız testleri için iyi ama rate limit
@@ -2968,7 +2969,7 @@ PlaylistTrack(PlaylistId, TrackId)
 
         <p class="schema-note">
           Detaylı kılavuz:
-          <a href="./failure-recovery.md"><code>failure-recovery.md</code></a>
+          <a href="https://github.com/burakcanpolat/n8n-izmir-workshop-2026/blob/main/speakers/burak-can-polat/failure-recovery.md" target="_blank" rel="noopener"><code>failure-recovery.md</code></a>
         </p>
       </section>
 
@@ -2989,9 +2990,9 @@ PlaylistTrack(PlaylistId, TrackId)
             <div class="trio-label"><span class="lbl-tick">▶</span> Code Tool ile aynı şeyi nasıl yaparsın?</div>
             <p class="prose">
               HTTP Tool yerine n8n'in <code>Code</code> node'unu kullanarak
-              SQL'i n8n içinden çalıştıran bir varyant da var. Devs için
+              SQL'i n8n içinden çalıştıran bir varyant da var. Geliştiriciler için
               ekstra örnek:
-              <a href="./bonus/dev-corner/README.md"><code>bonus/dev-corner/README.md</code></a>
+              <a href="https://github.com/burakcanpolat/n8n-izmir-workshop-2026/blob/main/speakers/burak-can-polat/bonus/dev-corner/README.md" target="_blank" rel="noopener"><code>bonus/dev-corner/README.md</code></a>
             </p>
           </div>
 
@@ -2999,7 +3000,7 @@ PlaylistTrack(PlaylistId, TrackId)
             <div class="trio-label"><span class="lbl-tick">▶</span> Bu workshop'u kendine adapte et</div>
             <p class="prose">
               Tüm kaynak:
-              <a href="https://github.com/onurpolat05/n8n-izmir-workshop-2026" target="_blank" rel="noopener"><code>github.com/onurpolat05/n8n-izmir-workshop-2026</code></a>
+              <a href="https://github.com/burakcanpolat/n8n-izmir-workshop-2026" target="_blank" rel="noopener"><code>github.com/burakcanpolat/n8n-izmir-workshop-2026</code></a>
               <br>
               (<code>speakers/burak-can-polat/</code> altında)
             </p>
@@ -3008,7 +3009,6 @@ PlaylistTrack(PlaylistId, TrackId)
           <div class="trio-card">
             <div class="trio-label"><span class="lbl-tick">▶</span> İletişim</div>
             <p class="prose">
-              <!-- TODO: Burak to confirm profile URLs -->
               LinkedIn:
               <a href="https://linkedin.com/in/burakcanpolat" target="_blank" rel="noopener"><code>linkedin.com/in/burakcanpolat</code></a>
               <br>
@@ -3032,7 +3032,7 @@ PlaylistTrack(PlaylistId, TrackId)
   <script>
     // ─── COPY HANDLER ─────────────────────────────
     // Builds feedback DOM via createElement instead of innerHTML to keep the
-    // (paranoid) static analyzer happy. All text is from constants below — no
+    // (paranoid) static analyzer happy. All text is from constants below; no
     // user input ever flows into the DOM as HTML.
 
     function buildIcon(kind) {
