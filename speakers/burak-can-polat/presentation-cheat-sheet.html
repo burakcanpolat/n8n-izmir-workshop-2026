@@ -2744,6 +2744,173 @@ PlaylistTrack(PlaylistId, TrackId)
         </div>
       </section>
 
+      <!-- ────── SECTION 8: MODELLER ────── -->
+      <section id="modeller">
+        <div class="sec-head">
+          <span class="sec-num">08 /</span>
+          <h2 class="sec-title">Model Alternatifleri (OpenRouter)</h2>
+          <span class="sec-aside"><span class="pill">8 model · tek API</span></span>
+        </div>
+
+        <p class="prose">
+          Workshop'a haiku-4.5 ile başladık ama OpenRouter'da 8 farklı model var —
+          bütçen, hızın, dil tercihin neyse seç. Hepsi tool calling destekliyor.
+        </p>
+
+        <table class="ep-table" role="table" aria-label="OpenRouter model alternatifleri">
+          <thead>
+            <tr>
+              <th scope="col">Model</th>
+              <th scope="col">Model ID</th>
+              <th scope="col">Tier</th>
+              <th scope="col">Tool calling</th>
+              <th scope="col">Türkçe</th>
+              <th scope="col">Not</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- ─── ÜCRETSİZ ─── -->
+            <tr>
+              <td>Gemini 2.0 Flash Exp</td>
+              <td class="ep-mono">
+                <code id="model-gemini-flash-exp">google/gemini-2.0-flash-exp:free</code>
+                <button class="copy-btn" data-copy="model-gemini-flash-exp" aria-label="Gemini 2.0 Flash Exp ID kopyala">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </td>
+              <td>Ücretsiz</td>
+              <td>⭐⭐ hızlı ama deneysel</td>
+              <td>⭐⭐⭐</td>
+              <td class="ep-desc">Free denemelerin için; rate limit nedeniyle workshop ortamında yavaşlayabilir.</td>
+            </tr>
+            <tr>
+              <td>Llama 3.3 70B Instruct</td>
+              <td class="ep-mono">
+                <code id="model-llama-3-3-70b">meta-llama/llama-3.3-70b-instruct:free</code>
+                <button class="copy-btn" data-copy="model-llama-3-3-70b" aria-label="Llama 3.3 70B ID kopyala">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </td>
+              <td>Ücretsiz</td>
+              <td>⭐⭐ yeterli</td>
+              <td>⭐⭐</td>
+              <td class="ep-desc">Ücretsiz en güvenilir araç çağırma seçeneği; Türkçe kabul edilebilir.</td>
+            </tr>
+
+            <!-- ─── UCUZ ─── -->
+            <tr>
+              <td>Claude Haiku 4.5</td>
+              <td class="ep-mono">
+                <code id="model-haiku-4-5">anthropic/claude-haiku-4.5</code>
+                <button class="copy-btn" data-copy="model-haiku-4-5" aria-label="Claude Haiku 4.5 ID kopyala">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </td>
+              <td>Ucuz</td>
+              <td>⭐⭐⭐ Doğrulandı ✅</td>
+              <td>⭐⭐⭐</td>
+              <td class="ep-desc">14 sorudan 11'ini doğru yanıtladı; default.</td>
+            </tr>
+            <tr>
+              <td>DeepSeek V3</td>
+              <td class="ep-mono">
+                <code id="model-deepseek-v3">deepseek/deepseek-chat</code>
+                <button class="copy-btn" data-copy="model-deepseek-v3" aria-label="DeepSeek V3 ID kopyala">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </td>
+              <td>Ucuz</td>
+              <td>⭐⭐⭐ tutarlı</td>
+              <td>⭐⭐⭐</td>
+              <td class="ep-desc">GPT-4 seviyesi kaliteyi düşük maliyetle.</td>
+            </tr>
+            <tr>
+              <td>GPT-4o Mini</td>
+              <td class="ep-mono">
+                <code id="model-gpt-4o-mini">openai/gpt-4o-mini</code>
+                <button class="copy-btn" data-copy="model-gpt-4o-mini" aria-label="GPT-4o Mini ID kopyala">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </td>
+              <td>Ucuz</td>
+              <td>⭐⭐⭐ güvenilir</td>
+              <td>⭐⭐⭐</td>
+              <td class="ep-desc">OpenAI'a aşina katılımcılar için tanıdık.</td>
+            </tr>
+
+            <!-- ─── STANDART ─── -->
+            <tr>
+              <td>Qwen 2.5 72B</td>
+              <td class="ep-mono">
+                <code id="model-qwen-2-5-72b">qwen/qwen-2.5-72b-instruct</code>
+                <button class="copy-btn" data-copy="model-qwen-2-5-72b" aria-label="Qwen 2.5 72B ID kopyala">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </td>
+              <td>Standart</td>
+              <td>⭐⭐ iyi</td>
+              <td>⭐⭐⭐</td>
+              <td class="ep-desc">Çok dilli güçlü model; veri analizi öne çıkar.</td>
+            </tr>
+            <tr>
+              <td>Gemini 2.5 Flash</td>
+              <td class="ep-mono">
+                <code id="model-gemini-2-5-flash">google/gemini-2.5-flash</code>
+                <button class="copy-btn" data-copy="model-gemini-2-5-flash" aria-label="Gemini 2.5 Flash ID kopyala">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </td>
+              <td>Standart</td>
+              <td>⭐⭐⭐ hızlı+güçlü</td>
+              <td>⭐⭐⭐</td>
+              <td class="ep-desc">n8n workshop önerilen LLM; free bittiyse buraya geç.</td>
+            </tr>
+
+            <!-- ─── PREMIUM ─── -->
+            <tr>
+              <td>Claude Sonnet 4.6</td>
+              <td class="ep-mono">
+                <code id="model-sonnet-4-6">anthropic/claude-sonnet-4.6</code>
+                <button class="copy-btn" data-copy="model-sonnet-4-6" aria-label="Claude Sonnet 4.6 ID kopyala">
+                  <svg class="ico" viewBox="0 0 16 16" fill="none" aria-hidden="true"><path d="M5 5V3a1 1 0 011-1h7a1 1 0 011 1v7a1 1 0 01-1 1h-2M3 5h7a1 1 0 011 1v7a1 1 0 01-1 1H3a1 1 0 01-1-1V6a1 1 0 011-1z" stroke="currentColor" stroke-width="1.4"/></svg>
+                  <span class="lbl">copy</span>
+                </button>
+              </td>
+              <td>Premium</td>
+              <td>⭐⭐⭐ en güvenilir</td>
+              <td>⭐⭐⭐</td>
+              <td class="ep-desc">En iyi kalite gerektiğinde; en pahalı seçenek.</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <p class="prose">
+          İlk denemen için <code>anthropic/claude-haiku-4.5</code> ile başla —
+          workshop boyunca test edildi ve kararlı çalışıyor.
+          Ücretsiz tier istiyorsan <code>meta-llama/llama-3.3-70b-instruct:free</code> tercih et;
+          <code>google/gemini-2.0-flash-exp:free</code> hız testleri için iyi ama rate limit
+          nedeniyle grup kullanımında yavaşlayabilir.
+          Uygun fiyat ve yüksek doğruluk istiyorsan
+          <code>deepseek/deepseek-chat</code> veya <code>google/gemini-2.5-flash</code>
+          harika bir denge sunuyor.
+          En iyi Türkçe ve SQL kalitesini istiyorsan
+          <code>anthropic/claude-sonnet-4.6</code> ile devam et.
+        </p>
+
+        <p class="schema-note">
+          Model değiştirme: <code>OpenRouter Chat Model</code> node'unu aç →
+          <code>Model</code> alanını yukarıdaki ID'lerden biriyle değiştir →
+          Save → bot'a yeni soru gönder.
+        </p>
+      </section>
+
       <footer>
         <span>n8n-workshop / cheat-sheet · v0.1 · build-mockup-B</span>
         <span class="turkish">çğıöşüÇĞİÖŞÜ ✓</span>
